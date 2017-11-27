@@ -1,0 +1,36 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Name>classes</Name>
+    <ProjectGuid>{6696f1a7-74c0-4418-bd52-6d7e4e656983}</ProjectGuid>
+    <RootNamespace>
+    </RootNamespace>
+    <OutputType>Library</OutputType>
+    <ProjectTypeGuids>{A0786B88-2ADB-4C21-ABE8-AA2D79766269}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <IncludeDebugInformation>true</IncludeDebugInformation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <IncludeDebugInformation>false</IncludeDebugInformation>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="DB3\Column.php" />
+    <Compile Include="DB3\DB3.php" />
+    <Compile Include="DB3\Filter.php" />
+    <Compile Include="DB3\Model.php" />
+    <Compile Include="DB3\Type.php" />
+    <Compile Include="HTMLFormSelect.php" />
+    <Compile Include="HTMLForm\Input.php" />
+    <Compile Include="HTMLForm\Input5.php" />
+    <Compile Include="HTMLForm\InputBase.php" />
+    <Compile Include="HTMLForm\Select.php" />
+    <Compile Include="HTMLForm\Text.php" />
+    <Compile Include="HTMLTools\Table.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DB3\" />
+    <Folder Include="HTMLForm\" />
+    <Folder Include="HTMLTools\" />
+  </ItemGroup>
+</Project>
