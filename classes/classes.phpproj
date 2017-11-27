@@ -15,6 +15,7 @@
     <IncludeDebugInformation>false</IncludeDebugInformation>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Comment.php" />
     <Compile Include="DB3\Column.php" />
     <Compile Include="DB3\DB3.php" />
     <Compile Include="DB3\Filter.php" />
@@ -27,6 +28,8 @@
     <Compile Include="HTMLForm\Select.php" />
     <Compile Include="HTMLForm\Text.php" />
     <Compile Include="HTMLTools\Table.php" />
+    <Compile Include="Image.php" />
+    <Compile Include="Member.php" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DB3\" />
