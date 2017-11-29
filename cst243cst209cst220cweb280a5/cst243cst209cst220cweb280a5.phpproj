@@ -8,6 +8,12 @@
     </RootNamespace>
     <ProjectTypeGuids>{A0786B88-2ADB-4C21-ABE8-AA2D79766269}</ProjectTypeGuids>
     <AssemblyName>cst243cst209cst220cweb280a5</AssemblyName>
+    <Runtime>PHP</Runtime>
+    <RuntimeVersion>7.0</RuntimeVersion>
+    <SaveServerSettingsInUserFile>false</SaveServerSettingsInUserFile>
+    <EnvName>PHPDev</EnvName>
+    <PHPDevHostName>localhost</PHPDevHostName>
+    <PHPDevAutoPort>true</PHPDevAutoPort>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <IncludeDebugInformation>true</IncludeDebugInformation>
@@ -20,8 +26,10 @@
     <Folder Include="json\" />
     <Folder Include="style\" />
     <Folder Include="pages\" />
+    <Folder Include="tempimg\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="pages\fileupload.php" />
     <Compile Include="pages\memberlogin.php" />
     <Compile Include="pages\memberresiter.php" />
   </ItemGroup>
@@ -36,5 +44,8 @@
       <Project>{26fec34a-e5f6-4160-beb8-b2b652b2ccb7}</Project>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="pages\htmltemplate.html" />
   </ItemGroup>
 </Project>
