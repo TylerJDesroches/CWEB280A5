@@ -29,6 +29,7 @@
     <Compile Include="HTMLForm\Text.php" />
     <Compile Include="HTMLTools\Table.php" />
     <Compile Include="Image.php" />
+    <Compile Include="LoginMember.php" />
     <Compile Include="Member.php" />
   </ItemGroup>
   <ItemGroup>
