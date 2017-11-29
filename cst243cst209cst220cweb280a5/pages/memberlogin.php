@@ -32,8 +32,7 @@ $isValidPost = $isPosted && $loginMember->validate();
 if ($isValidPost)
 {
 	// open db
-    $db = new DB3('../db/imageranker.db');
-    $db->
+    $db = new DB3('../../db/imageranker.db');
     //see if the member exists based off of the email OR alias
     $filters = array(new Filter('email', $loginMember->aliasEmail), new Filter('alias', $loginMember->aliasEmail));
     $logins = $db->selectSome(new Member(), $filters, false); // Use the OR operator
