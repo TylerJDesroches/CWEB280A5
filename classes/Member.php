@@ -1,5 +1,6 @@
 <?php
 use DB3\Model;
+use DB3\Type;
 
 /**
  * Stores a member in the system
@@ -32,42 +33,55 @@ class Member extends Model
     }
     public $password;
     /**
-     * A validator function for the password field that checks
-     * if the password is either empty or not more than 100 characters.
-     * If the password is empty then the password has already been added to the database.
-     * If the password is not empty then this is the member has just created their password
+     * A validator function for the password field that checks if
+     * the password is not empty and 8-16 characters, or
+     * the password matches the hashed password
      * @return boolean
      */
     public function validate_password()
     {
-        return $this->checkProperty('password');
+        return $this->checkProperty('password',
+            !empty($this->password) && strlen($this->password) >=8 && strlen($this->password) <= 16  ||
+            password_hash($this->password) == $this->hashedPassword, '%s must be specified');
     }
+    private $hashedPassword;
     public $alias;
+    /**
+     * This is a validator function that checks if the alias is
+     * less than 15 characters and isn't empty.
+     * @return boolean
+     */
     public function validate_alias()
     {
-
+        return $this->checkProperty('alias', !empty( $this->alias ) && strlen($this->alias) <= 15 );
     }
     public $profileImgPath;
+    /**
+     * A validator function for profileImgPath that checks if the path is not empty
+     */
     public function validate_profileImagePath()
     {
-
+        return $this->checkProperty('profileImgPath', !empty($this->checkProperty), '%s must be specified');
     }
 
-    /**
-     * Creates a member with all it's fields
-     * @param mixed $memberId the id of member
-     * @param mixed $email email address
-     * @param mixed $password hashed password
-     * @param mixed $alias user alias
-     * @param mixed $profileImgPath path to the user's profile image.
-     */
-    public function __construct($memberId, $email, $password, $alias, $profileImgPath)
+
+    public function __construct()
     {
-        $this->memberId = $memberId;
-        $this->email = $email;
-        $this->password = $password;
-        $this->alias = $alias;
-        $this->profileImgPath = $profileImgPath;
+        // Define the columns for a member
+        // Autoincrementing primary key
+        $this->defineColumn('memberId', Type::INT, null,false,true,true);
+        // email
+        $this->defineColumn('email', Type::TXT, 200, false,false,false);
+        // alias
+        $this->defineColumn('alias', Type::TXT, 15, false);
+        // Encrypted Password
+
+        // path
+        $this->defineColumn('profileImgPath',Type::TXT, null, false);
+
+
+        // Set labels for each attribute
+
     }
 
 }
