@@ -20,5 +20,23 @@ class LoginMember extends Model
         $this->setLabel('password', 'Password');
     }
 
-    // NOTE ADD VALIDATION HERE
+    /**
+     * Ensures that the email / alias field is not blank. Can't really validate on anything else since it can take either and they
+     * each have their own totally different requirements. Since it is just a log in box, this should be okay.
+     * @return boolean
+     */
+    public function validate_aliasEmail()
+    {
+        return $this->checkProperty('aliasEmail', !empty(trim($this->aliasEmail)), '%s is required');
+    }
+
+    /**
+     * validates that the password is not blank and is between 8 and 16 characters
+     * @return boolean
+     */
+    public function validate_password()
+    {
+        return $this->checkProperty('password', !empty(trim($this->password)), '%s is required')
+            && $this->checkProperty('password', strlen($this->password) >= 8 && strlen($this->password) <= 16, '%s must be between 8 and 16 characters long');
+    }
 }
