@@ -21,4 +21,20 @@
     <Folder Include="style\" />
     <Folder Include="pages\" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="pages\memberlogin.php" />
+    <Compile Include="pages\memberresiter.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\classes\classes.phpproj">
+      <Name>classes</Name>
+      <Project>{6696f1a7-74c0-4418-bd52-6d7e4e656983}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\db\db.phpproj">
+      <Name>db</Name>
+      <Project>{26fec34a-e5f6-4160-beb8-b2b652b2ccb7}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

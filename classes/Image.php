@@ -28,6 +28,7 @@ class Image
      * @param mixed $caption caption of image
      * @param mixed $views number of views image recieves
      */
+    /*
     public function __construct($imageId, $name, $path, $size, $type, $ranking, $caption, $views)
     {
         $this->imageId = $imageId;
@@ -39,4 +40,5 @@ class Image
         $this->caption = $caption;
         $this->views = $views;
     }
+    */
 }

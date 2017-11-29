@@ -15,6 +15,7 @@ class Member extends Model
     public $alias;
     public $profileImgPath;
 
+
     /**
      * Creates a member with all it's fields
      * @param mixed $memberId the id of member
@@ -23,6 +24,7 @@ class Member extends Model
      * @param mixed $alias user alias
      * @param mixed $profileImgPath path to the user's profile image.
      */
+    /*
     public function __construct($memberId, $email, $password, $alias, $profileImgPath)
     {
         $this->memberId = $memberId;
@@ -31,4 +33,6 @@ class Member extends Model
         $this->alias = $alias;
         $this->profileImgPath = $profileImgPath;
     }
+    */
+    
 }

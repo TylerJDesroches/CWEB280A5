@@ -22,6 +22,7 @@ class Comment
      * @param mixed $imageId the id of the image that is being commented on
      * @param mixed $memberId the id of the member that made the comment
      */
+    /*
     public function __construct($commentId, $description, $ranking, $imageId, $memberId)
     {
         $this->commentId = $commentId;
@@ -30,4 +31,5 @@ class Comment
         $this->imageId = $imageId;
         $this->memberId = $memberId;
     }
+    */
 }
