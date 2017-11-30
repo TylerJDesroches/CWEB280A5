@@ -29,7 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="pages\memberlogin.php" />
-    <Compile Include="pages\memberresiter.php" />
+    <Compile Include="pages\memberregister.php" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\classes\classes.phpproj">
