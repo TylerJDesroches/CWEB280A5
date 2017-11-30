@@ -69,7 +69,9 @@ class Member extends Model
     {
         // Define the columns for a member
         // Autoincrementing primary key
-        $this->defineColumn('memberId', Type::INT, null,false,true,true);
+        $this->defineColumn('memberId', Type::INT, null, false,true,true);
+        // password
+        $this->defineColumn('password', Type::TXT, 255, false);
         // email
         $this->defineColumn('email', Type::TXT, 200, false,false,false);
         // alias

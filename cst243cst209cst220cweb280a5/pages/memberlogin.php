@@ -33,6 +33,7 @@ if ($isValidPost)
 {
 	// open db
     $db = new DB3('../../db/imageranker.db');
+
     //see if the member exists based off of the email OR alias
     $filters = array(new Filter('email', $loginMember->aliasEmail), new Filter('alias', $loginMember->aliasEmail));
     $logins = $db->selectSome(new Member(), $filters, false); // Use the OR operator
@@ -47,6 +48,14 @@ if ($isValidPost)
 // If the user isn't authenticated, generate the labels to show on screen
 if (!$isAuthenticated)
 {
+    // If the form was valid, it means they were not found in the database. Clear the inputs
+    if ($isValidPost)
+    {
+    	$loginMember = new LoginMember();
+        // also reset isposted so errors don't appear
+        $isPosted = false;
+    }
+
 	// Email / alias
     $aliasEmailInput = new Input('aliasEmail', 'text', $loginMember->aliasEmail);
     $aliasEmailInput->addLabel($loginMember->getLabel('aliasEmail'));
@@ -103,7 +112,7 @@ else // Otherwise, the user is authenticated, so redirect them
     <?php }
           if ($isValidPost) { ?>
     <div>
-        Credentials not found <?= htmlentities($loginMember->email) ?>.
+        Credentials not found
     </div>
     <?php } ?>
 </body>
