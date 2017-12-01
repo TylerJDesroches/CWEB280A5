@@ -14,9 +14,11 @@ spl_autoload_register(function ($class) {
 $isPosted = $_SERVER['REQUEST_METHOD'] === 'POST';
 // If the member is registered
 $isRegistered = false;
+// If the member is valid
+$isValidMember = false;
 
 // Create a new member variable
-$member;
+$member = new Member();
 
 // If the form is posted, populate the member fields
 if ($isPosted)
@@ -69,16 +71,49 @@ $passwordInput->addError($isPosted && !$member->validate_password(), $member->ge
 
 // Profile image
 $profileInput = new Input('profileImg', 'file');
-$profileInput->addLabel($member->getLabel('Profile Image'));
+$profileInput->addLabel('Profile Image');
 $profileInput->addError($isPosted && !$member->validate_profileImgPath(), $member->getError('profileImgPath'));
 $profileInput->addError($isPosted && !$member->validate_profileImgSize(), $member->getError('profileImgSize'));
 $profileInput->addError($isPosted && !$member->validate_profileImgType(), $member->getError('profileImgType'));
 
-
-
-
-
-
+$aliasInput = new Input('alias', 'text', $member->alias);
+$aliasInput->addLabel($member->getLabel('alias'));
+$aliasInput->addError($isPosted && !$member->validate_alias(), $member->getError('alias'));
 
 ?>
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Member Register</title>
+</head>
+<body>
+    <h1>Member Resiter</h1>
+    <?php if (!$isValidMember)
+          { ?>
+    <form action="#" method="post">
+        <fieldset>
+            <div>
+                <?php $emailInput->render(); ?>
+            </div>
+            <div>
+                <?php $passwordInput->render(); ?>
+            </div>
+            <div>
+                <?php $profileInput->render(); ?>
+            </div>
+            <div>
+                <?php $aliasInput->render(); ?>
+            </div>
+            <div>
+                <input type="submit" value="Register" />
+            </div>
+        </fieldset>
+    </form>
+    <?php } else if (!$isRegistered) { ?>
+    <div>
+        Email address or alias is already in use.
+    </div>
+    <?php } ?>
+</body>
+</html>
