@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="img\" />
+    <Folder Include="img\profileimg\" />
     <Folder Include="json\" />
     <Folder Include="style\" />
     <Folder Include="pages\" />
