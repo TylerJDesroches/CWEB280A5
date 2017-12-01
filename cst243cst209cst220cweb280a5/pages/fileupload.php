@@ -12,67 +12,86 @@ spl_autoload_register(function ($class) {
     require_once '..\\..\\classes\\' .$class . '.php';
 });
 
-
-
 //If the current user is not signed in, they will be redirected to the login page
 //if(!isset($_SESSION['member']))
 //{
 //    header('Location: memberlogin.php');
 //}
 
+//Check to see if the user tried to upload nothing
+$isEmptyUpload = !empty($_FILES['imageUpload']['error']);
+
 //If the page has been posted
 $isPosted = $_SERVER['REQUEST_METHOD'] === 'POST';
 
 //This will be used to declare that the user has uploaded a valid image file
-$isValid = false;
+$isValidPost = false;
+
+//Create a string that will hold error messages to output to user
+$errorMessage = '';
 
 //set the logged in member to a variable to make it easier to call
-$member = get_object_vars($_SESSION['member']);
+//$member = get_object_vars($_SESSION['member']);
 
-//Get the file that the user has uploaded
-if(isset($_FILES['imageUpload']))
-{
-    $imageVars = $_FILES['imageUpload'];
-    $uploadedFile = new Image($imageVars['name'], $imageVars['tmp_name'],$imageVars['size'],$imageVars['type'], 1);
-}
-
-//Check to see if the user has set a caption, or opted not to set one.
-if(isset($_POST['imageCaption']))
-{
-    $db = new DB3('../../db/imageranker.db');
-    $image = $db->selectSome(new Image(), array(new Filter('path', $_POST['imagePath'])));
-    //move the file to the img folder
-    if(move_uploaded_file($uploadedFile->path, '../img/' .$uploadedFile->name))
-    {
-        $uploadedFile->path = '../img/' .$uploadedFile->name;
-    }
-
-
-    ////create db as needed and insert new record.
-    //
-    //$db->exec($uploadedFile->tableDefinition()); //create table as needed for the files
-
-
-    //$db->close();
-    //$db=null;
-}
 
 //If the user has submitted a valid image
-if($isPosted && isset($_FILES['imageUpload']) && $uploadedFile->validate())
+if($isPosted && !$isEmptyUpload && isset($_FILES['imageUpload']))
 {
-    //Assign a unique id to the name
-    $uniqid = uniqid();
-    //Move the image to a temp folder while the user assigns a caption
-    if(move_uploaded_file($uploadedFile->path, '../tempimg/' .$uniqid.$uploadedFile->name))
-    {
-        $uploadedFile->path = '../tempimg/' .$uniqid.$uploadedFile->name;
-    }
+    $imageVars = $_FILES['imageUpload'];
+    //Create an Image object
+    $uploadedFile = new Image($imageVars['name'], $imageVars['tmp_name'],$imageVars['size'],$imageVars['type'], 1);
+    //Check to see if the uploaded image is valid
+    $isValidPost = $uploadedFile->validate();
 
+
+    if($isValidPost)
+    {
+        $db = new DB3('../../db/imageranker.db');
+        $db->exec($uploadedFile->tableDefinition());
+        //Assign a unique id to the name
+        $uniqid = uniqid();
+        //Move the image to a temp folder while the user assigns a caption
+        $shortName = substr($imageVars['name'],strpos($imageVars['name'],"."));
+        if(move_uploaded_file($uploadedFile->path, '../img/' .$uniqid.$shortName))
+        {
+            $uploadedFile->path = '../img/' .$uniqid.$shortName;
+        }
+        //insert the image data into the database
+        $db->insert($uploadedFile);
+        $db->close();
+        $db = null;
+    }
+    else
+    {
+        $errorMessage .= $uploadedFile->getError('size');
+    }
+}
+
+if($isPosted && isset($_POST['imagePath']))
+{
+    $db = new DB3('../../db/imageranker.db');
+    $validUpload = $db->selectSome(new Image(), array(new Filter('path',$_POST['imagePath'])))[0];
+    $validUpload->approved = true;
+    $validUpload->caption = $_POST['imageCaption'];
 }
 
 $inputFile = new Input("imageUpload", "file");
-$inputCaption = new Input("imageCaption", 'text');
-$inputPath = new Input("imagePath", "hidden", $uploadedFile->path);
+if(isset($uploadedFile))
+{
+    $inputImagePath = new Input("imagePath", "hidden", $uploadedFile->path);
+
+    $inputCaption = new Input("imageCaption", 'text');
+}
+//TODO: REMOVE THIS ONCE MEMBER IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+$memIDSet = new Input("memID", "hidden", 1);
+
+if($isEmptyUpload)
+{
+    $errorMessage .= <<<EOT
+    <p>Must select a file to upload<p>
+
+EOT;
+}
 
 ?>
 
@@ -83,7 +102,8 @@ $inputPath = new Input("imagePath", "hidden", $uploadedFile->path);
 </head>
 <body>
     <h1>File Upload</h1>
-    <?php if(!$isPosted && !$isValid) { ?>
+    <?php if(!$isPosted || !$isValidPost) { ?>
+    <?=$errorMessage?>
     <form action="#" method="post" enctype="multipart/form-data">
         <fieldset>
             <div>
@@ -91,6 +111,7 @@ $inputPath = new Input("imagePath", "hidden", $uploadedFile->path);
             </div>
             <div>
                 <input type="submit" value="Upload" />
+                <?php $memIDSet->render(); ?>
             </div>
         </fieldset>
     </form>
@@ -99,14 +120,14 @@ $inputPath = new Input("imagePath", "hidden", $uploadedFile->path);
         <fieldset>
             <div>
                 <label>Image Caption</label>
-                <?php $inputCaption->render(); ?>
+                <?php  $inputCaption->render(); ?>
             </div>
             <div>
                 <img src="<?=$uploadedFile->path?>" alt="Uploaded Image" />
             </div>
             <div>
                 <input type="submit" value="Post to Gallery" />
-                <?php $inputPath->render(); ?>
+                <?php $inputImagePath->render(); ?>
             </div>
         </fieldset>
         

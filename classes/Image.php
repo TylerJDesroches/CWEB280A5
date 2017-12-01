@@ -10,12 +10,12 @@ use DB3\Type;
  */
 class Image extends Model
 {
-    public $imageId;
-    public $name;
+    private $name;
     public $path;
     public $memId;
     public $caption;
     public $views;
+    public $approved;
 
     private $size;
     private $type;
@@ -68,6 +68,8 @@ class Image extends Model
      * @param mixed $size size of image
      * @param mixed $type type of image
      * @param mixed $caption caption of image
+     * @param mixed $views number times the image has been viewed
+     * @param mixed $approved whether the uploader has approved the image to be viewed in the gallery
      */
     public function __construct($name='', $path='', $size=0, $type='', $memId=0, $caption="", $views=0)
     {
@@ -78,18 +80,21 @@ class Image extends Model
         $this->memId = $memId;
         $this->caption = $caption;
         $this->views = $views;
+        $this->approved = false;
 
         $this->defineColumn('id',Type::INT,null,false,true,true);
         $this->defineColumn('path',Type::VRC, 255, false);
-        $this->defineColumn('size',Type::INT, null, false);
         $this->defineColumn('memId',Type::INT, null, false);
         $this->defineColumn('caption',Type::VRC, 144, true);
+        $this->defineColumn('approved',Type::BOL, null, false);
+        $this->defineColumn('views',Type::INT,null);
 
         $this->setLabel('id', 'File ID');
         $this->setLabel('path', 'File Path');
         $this->setLabel('size', 'File Size');
         $this->setLabel('memId', 'Member');
         $this->setLabel('caption', 'Caption');
+        $this->setLabel('approved', 'Approved');
 
     }
 
