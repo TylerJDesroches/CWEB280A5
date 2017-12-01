@@ -23,13 +23,14 @@ $member = new Member();
 // If the form is posted, populate the member fields
 if ($isPosted)
 {
+    var_dump($_FILES);
     // Create a new member by hashing the password, getting the file type and file size. This is due to validation, but not storing some things in the database.
-    $member = new Member($_FILES[0]['type'], $_FILES[0]['size']);
+    $member = new Member($_FILES['profileImg']['type'], $_FILES['profileImg']['size']);
 	$member->email = $_POST['email'];
     $member->password = $_POST['password'];
     $member->alias = $_POST['alias'];
     // Get / produce the image path
-    $member->profileImgPath = '..\\img\\profileimg\\' . uniqid() . $_FILES[0]['name'];
+    $member->profileImgPath = '..\\img\\profileimg\\' . uniqid() . $_FILES['profileImg']['name'];
 
     // Try to validate the new member
     $isValidMember = $member->validate();
@@ -91,7 +92,7 @@ $aliasInput->addError($isPosted && !$member->validate_alias(), $member->getError
     <h1>Member Resiter</h1>
     <?php if (!$isValidMember)
           { ?>
-    <form action="#" method="post">
+    <form action="#" method="post" enctype="multipart/form-data">
         <fieldset>
             <div>
                 <?php $emailInput->render(); ?>

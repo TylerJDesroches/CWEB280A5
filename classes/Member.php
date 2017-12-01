@@ -77,7 +77,7 @@ class Member extends Model
      */
     public function validate_profileImgPath()
     {
-        return $this->checkProperty('profileImgPath', !empty($this->checkProperty), '%s must be specified');
+        return $this->checkProperty('profileImgPath', !empty($this->checkProperty), ' must be specified');
     }
     /**
      * A validator function for profileImgType that
