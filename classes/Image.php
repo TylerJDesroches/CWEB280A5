@@ -57,7 +57,7 @@ class Image extends Model
     public function validate_size()
     {
         //if uploading an image to the gallery, restrict file size to 100 KB
-        return $this->checkProperty('size', $this->size < 102400, 'Standard can only upload files that are less than 100 KB');
+        return $this->checkProperty('size', $this->size < 102400, 'You can only upload files that are less than 100 KB');
         //TODO: Add validation to check if user is uploading image for gallery or for profile image. Limit profile image to 15KB
     }
 

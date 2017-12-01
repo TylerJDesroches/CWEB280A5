@@ -63,16 +63,23 @@ if($isPosted && !$isEmptyUpload && isset($_FILES['imageUpload']))
     }
     else
     {
+        //Display error messages
         $errorMessage .= $uploadedFile->getError('size');
+        $errorMessage .= $uploadedFile->getError('type');
+        $errorMessage .= $uploadedFile->getError('path');
     }
 }
 
+//When the user selects "Post to gallery"
 if($isPosted && isset($_POST['imagePath']))
 {
     $db = new DB3('../../db/imageranker.db');
+    //get the image that is being approved
     $validUpload = $db->selectSome(new Image(), array(new Filter('path',$_POST['imagePath'])))[0];
+    //Set the approved value to true
     $validUpload->approved = true;
     $validUpload->caption = $_POST['imageCaption'];
+
 }
 
 $inputFile = new Input("imageUpload", "file");
@@ -85,6 +92,7 @@ if(isset($uploadedFile))
 //TODO: REMOVE THIS ONCE MEMBER IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 $memIDSet = new Input("memID", "hidden", 1);
 
+//If the user pressed "Upload" without selecting a file
 if($isEmptyUpload)
 {
     $errorMessage .= <<<EOT
