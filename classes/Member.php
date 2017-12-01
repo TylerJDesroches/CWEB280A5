@@ -40,7 +40,8 @@ class Member extends Model
      */
     public function validate_email()
     {
-        return $this->checkProperty('email', !empty($this->memberId));
+        return $this->checkProperty('email',!empty(trim($this->email)), '%s is required')
+            && $this->checkProperty('email',filter_var($this->email,FILTER_VALIDATE_EMAIL), '%s should be a valid email address');
     }
     /**
      * A validator function that checks if the hashed
@@ -126,14 +127,13 @@ class Member extends Model
         $this->setLabel('memberId','ID');
         $this->setLabel('email','Email Address');
         $this->setLabel('alias','Alias');
+        $this->setLabel('password','Password');
+        $this->setLabel('profileImgPath', 'Profile Image');
+        $this->setLabel('profileImgType', 'Profile Image');
+        $this->setLabel('profileImgSize', 'Profile Image');
     }
 
     // GETTERS AND SETTERS
-
-    public function setprofileImgType()
-    {
-        
-    }
 
     /**
      * Takes in a hashed password and sets the
