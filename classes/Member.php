@@ -60,8 +60,8 @@ class Member extends Model
     public function validate_password()
     {
         return $this->checkProperty('password',
-            !empty($this->password) && strlen($this->password) >=8 && strlen($this->password) <= 16  ||
-            password_hash($this->password) == $this->hashedPassword, '%s must be specified');
+            !empty($this->password) && ((strlen($this->password) >=8 && strlen($this->password) <= 16) ||
+            $this->password == $this->hashedPassword), '%s must be specified');
     }
     /**
      * This is a validator function that checks if the alias is
@@ -85,7 +85,9 @@ class Member extends Model
      */
     public function validate_profileImgType()
     {
-        return $this->checkProperty('profileImgType', empty($this->profileImgType) || , '%s must be a valid img type');
+        return $this->checkProperty('profileImgType',
+            empty($this->profileImgType) || $this->profileImgType == 'image/png' || $this->profileImgType == 'image/jpeg' ||
+            $this->profileImType == 'image/bmp' || $this->profileImType == 'image/webp', '%s must be a valid img type');
     }
     /**
      * A validator function for profileImgSize that checks
@@ -100,8 +102,12 @@ class Member extends Model
 
     // CONSTRUCTOR
 
-    public function __construct($profileImgType, $profileImgSize)
+    public function __construct($profileImgType='', $profileImgSize='')
     {
+        // Set private variables
+        $this->profileImgType = $profileImgType;
+        $this->profileImgSize = $profileImgSize;
+
         // Define the columns for a member
         // Autoincrementing primary key
         $this->defineColumn('memberId', Type::INT, null,false,true,true);
@@ -120,7 +126,12 @@ class Member extends Model
         $this->setLabel('alias','Alias');
     }
 
-    // FUNCTIONS
+    // GETTERS AND SETTERS
+
+    public function setprofileImgType()
+    {
+        
+    }
 
     /**
      * Takes in a hashed password and sets the
