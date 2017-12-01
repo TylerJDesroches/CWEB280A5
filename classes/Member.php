@@ -86,7 +86,7 @@ class Member extends Model
      */
     public function validate_profileImgType()
     {
-        return $this->checkProperty('profileImgType', empty($this->profileImgType), '%s must be specified' ) ||
+        return $this->checkProperty('profileImgType', !empty($this->profileImgType), '%s must be specified' ) ||
             $this->checkProperty('profileImgType',
                 $this->profileImgType == 'image/png' || $this->profileImgType == 'image/jpeg' ||
                 $this->profileImgType == 'image/bmp' || $this->profileImgType == 'image/webp'
@@ -99,7 +99,7 @@ class Member extends Model
     public function validate_profileImgSize()
     {
         return $this->checkProperty('profileImgSize',
-            empty($this->profileImgSize) || $this->profileImgSize <= 15360, '%s must be lower than 15kb');
+            !empty($this->profileImgSize) || $this->profileImgSize <= 15360, '%s must be lower than 15kb');
     }
 
 
