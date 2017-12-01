@@ -49,8 +49,8 @@ class Member extends Model
      */
     public function validateHashedPassword()
     {
-        return $this->checkProperty('hashedPassword',
-            !empty($this->hashedPassword) && strlen($this->hashedPassword) <= 255, "%s must be specified and below 256 characters");
+        return $this->checkProperty('hashedPassword', !empty($this->hashedPassword),'"%s must be specified ')
+            || $this->checkProperty('hashedPassword', strlen($this->hashedPassword) <= 255, "%s must be below 256 characters");
     }
     /**
      * A validator function for the password field that checks if
@@ -78,7 +78,7 @@ class Member extends Model
      */
     public function validate_profileImgPath()
     {
-        return $this->checkProperty('profileImgPath', !empty($this->checkProperty), '%s must be specified');
+        return $this->checkProperty('profileImgPath', !empty($this->profileImgPath), '%s must be specified');
     }
     /**
      * A validator function for profileImgType that
@@ -86,9 +86,11 @@ class Member extends Model
      */
     public function validate_profileImgType()
     {
-        return $this->checkProperty('profileImgType',
-            empty($this->profileImgType) || $this->profileImgType == 'image/png' || $this->profileImgType == 'image/jpeg' ||
-            $this->profileImType == 'image/bmp' || $this->profileImType == 'image/webp', '%s must be a valid img type');
+        return $this->checkProperty('profileImgType', empty($this->profileImgType), '%s must be specified' ) ||
+            $this->checkProperty('profileImgType',
+                $this->profileImgType == 'image/png' || $this->profileImgType == 'image/jpeg' ||
+                $this->profileImgType == 'image/bmp' || $this->profileImgType == 'image/webp'
+                ,'%s must be a valid img type');
     }
     /**
      * A validator function for profileImgSize that checks
@@ -131,14 +133,14 @@ class Member extends Model
         $this->setLabel('profileImgSize', 'Profile Image');
     }
 
-    // GETTERS AND SETTERS
+    // FUNCTIONS
 
     /**
      * Takes in a hashed password and sets the
      * $password and $hashedPassword attributes to what was passed in
      * @param mixed $hashedPassword The value of the hashed password
      */
-    private function setHashedPassword($hashedPassword)
+    public function setHashedPassword($hashedPassword)
     {
         $this->hashedPassword = $hashedPassword;
         $this->password = $hashedPassword;
