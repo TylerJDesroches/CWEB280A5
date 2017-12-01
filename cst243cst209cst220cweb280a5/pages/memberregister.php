@@ -23,14 +23,13 @@ $member = new Member();
 // If the form is posted, populate the member fields
 if ($isPosted)
 {
-    var_dump($_FILES);
     // Create a new member by hashing the password, getting the file type and file size. This is due to validation, but not storing some things in the database.
     $member = new Member($_FILES['profileImg']['type'], $_FILES['profileImg']['size']);
 	$member->email = $_POST['email'];
     $member->password = $_POST['password'];
     $member->alias = $_POST['alias'];
     // Get / produce the image path
-    $member->profileImgPath = '..\\img\\profileimg\\' . uniqid() . $_FILES['profileImg']['name'];
+    $member->profileImgPath = (!empty($_FILES['profileImg']['name'])) ?  '..\\img\\profileimg\\' . uniqid() . $_FILES['profileImg']['name'] : "";
 
     // Try to validate the new member
     $isValidMember = $member->validate();
@@ -44,7 +43,6 @@ if ($isPosted)
         $db->exec($member->tableDefinition());
         // Check if the email address already exists
         $existingLogins = $db->selectSome($member, array(new Filter('email', $member->email), new Filter('alias', $member->alias)), false); // Use OR
-
         // Time to hash the password
         $member->setHashedPassword(password_hash($member->password, PASSWORD_DEFAULT));
 
@@ -54,6 +52,8 @@ if ($isPosted)
         // Now that they are registered, redirect them to the login page
         if ($isRegistered)
         {
+            // If they successfully registered, move the file too
+            move_uploaded_file($_FILES['profileImg']['tmp_name'], $member->profileImgPath);
             header('Location: memberlogin.php');
         }
     }
@@ -89,7 +89,7 @@ $aliasInput->addError($isPosted && !$member->validate_alias(), $member->getError
     <title>Member Register</title>
 </head>
 <body>
-    <h1>Member Resiter</h1>
+    <h1>Member Register</h1>
     <?php if (!$isValidMember)
           { ?>
     <form action="#" method="post" enctype="multipart/form-data">

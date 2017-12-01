@@ -78,7 +78,7 @@ class Member extends Model
      */
     public function validate_profileImgPath()
     {
-        return $this->checkProperty('profileImgPath', !empty($this->checkProperty), ' must be specified');
+        return $this->checkProperty('profileImgPath', !empty($this->profileImgPath), '%s must be specified');
     }
     /**
      * A validator function for profileImgType that
@@ -88,7 +88,7 @@ class Member extends Model
     {
         return $this->checkProperty('profileImgType',
             empty($this->profileImgType) || $this->profileImgType == 'image/png' || $this->profileImgType == 'image/jpeg' ||
-            $this->profileImType == 'image/bmp' || $this->profileImType == 'image/webp', '%s must be a valid img type');
+            $this->profileImgType == 'image/bmp' || $this->profileImgType == 'image/webp', '%s must be a valid img type');
     }
     /**
      * A validator function for profileImgSize that checks
@@ -140,7 +140,7 @@ class Member extends Model
      * $password and $hashedPassword attributes to what was passed in
      * @param mixed $hashedPassword The value of the hashed password
      */
-    private function setHashedPassword($hashedPassword)
+    public function setHashedPassword($hashedPassword)
     {
         $this->hashedPassword = $hashedPassword;
         $this->password = $hashedPassword;
