@@ -33,9 +33,12 @@ $errorMessage = '';
 //If the user has uploaded an image, then selected delete
 if(isset($_POST['delete']))
 {
+    //Delete the image from the img folder
     unlink($_POST['imagePath']);
     $db = new DB3('../../db/imageranker.db');
+    //Get the Image object from the database
     $toDelete = $db->selectSome(new Image(), array(new Filter('path',$_POST['imagePath'])))[0];
+    //Delete the record of the image
     $db->delete($toDelete);
     $db->close();
     $db = null;
