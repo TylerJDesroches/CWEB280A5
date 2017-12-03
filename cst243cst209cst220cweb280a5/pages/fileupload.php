@@ -30,6 +30,17 @@ $isValidPost = false;
 //Create a string that will hold error messages to output to user
 $errorMessage = '';
 
+//If the user has uploaded an image, then selected delete
+if(isset($_POST['delete']))
+{
+    unlink($_POST['imagePath']);
+    $db = new DB3('../../db/imageranker.db');
+    $toDelete = $db->selectSome(new Image(), array(new Filter('path',$_POST['imagePath'])))[0];
+    $db->delete($toDelete);
+    $db->close();
+    $db = null;
+}
+
 //set the logged in member to a variable to make it easier to call
 //$member = get_object_vars($_SESSION['member']);
 
@@ -71,7 +82,7 @@ if($isPosted && !$isEmptyUpload && isset($_FILES['imageUpload']))
 }
 
 //When the user selects "Post to gallery"
-if($isPosted && isset($_POST['imagePath']))
+if($isPosted && isset($_POST['imagePath']) && !isset($_POST['delete']))
 {
     $db = new DB3('../../db/imageranker.db');
     //get the image that is being approved
@@ -80,16 +91,17 @@ if($isPosted && isset($_POST['imagePath']))
     $validUpload->approved = true;
     //$validUpload->type = 'image';
     $validUpload->caption = $_POST['imageCaption'];
-    $db->save($validUpload);
+    $db->update($validUpload);
     $db->close();
     $db = null;
 }
 
 $inputFile = new Input("imageUpload", "file");
+//If a file has been selected to upload
 if(isset($uploadedFile))
 {
     $inputImagePath = new Input("imagePath", "hidden", $uploadedFile->path);
-
+    $deleteButton = new Input("delete", "submit", 'Delete');
     $inputCaption = new Input("imageCaption", 'text');
 }
 //TODO: REMOVE THIS ONCE MEMBER IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -138,13 +150,12 @@ EOT;
             </div>
             <div>
                 <input type="submit" value="Post to Gallery" />
-                <input type="reset" value="Cancel" />
-                <?php $inputImagePath->render(); ?>
+                
+                <?php $inputImagePath->render();
+                      $deleteButton->render();?>
             </div>
         </fieldset>
-        
-    </form>
-            
+     </form> 
           <?php }?>
 </body>
 </html>
