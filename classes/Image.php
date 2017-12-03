@@ -10,26 +10,27 @@ use DB3\Type;
  */
 class Image extends Model
 {
-    private $name;
+    public $id;
     public $path;
     public $memId;
     public $caption;
     public $views;
     public $approved;
 
+    private $name;
     private $size;
     private $type;
 
 
-    /**
-     * Validates that the name is not empty.
-     * @return mixed - call to the checkProperty method that sees if an error needs to be added to the errors array.
-     */
-    public function validate_name()
-    {
-        //Name cannot be empty
-        return $this->checkProperty('name', !empty(trim($this->name)), '%s is required');
-    }
+    ///**
+    // * Validates that the name is not empty.
+    // * @return mixed - call to the checkProperty method that sees if an error needs to be added to the errors array.
+    // */
+    //public function validate_name()
+    //{
+    //    //Name cannot be empty
+    //    return $this->checkProperty('name', !empty(trim($this->name)), '%s is required');
+    //}
 
     /**
      * Validates that the path is not empty and it exists.
@@ -47,7 +48,15 @@ class Image extends Model
      */
     public function validate_type()
     {
-        return $this->checkProperty('type', strcmp(substr($this->type, 0, strpos($this->type, '/')),'image') === 0, 'Only files with the filetype of "Image" can be uploaded');
+        if($this->type === "")
+        {
+            $result = true;
+        }
+        else
+        {
+            $result = $this->checkProperty('type', strcmp(substr($this->type, 0, strpos($this->type, '/')),'image') === 0, 'Only files with the filetype of "Image" can be uploaded');
+        }
+        return $result;
     }
 
     /**

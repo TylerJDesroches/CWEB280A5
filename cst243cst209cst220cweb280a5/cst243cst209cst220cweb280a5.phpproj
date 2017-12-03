@@ -26,7 +26,6 @@
     <Folder Include="json\" />
     <Folder Include="style\" />
     <Folder Include="pages\" />
-    <Folder Include="tempimg\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="pages\fileupload.php" />

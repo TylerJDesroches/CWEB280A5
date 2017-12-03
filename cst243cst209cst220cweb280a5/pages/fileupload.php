@@ -78,8 +78,11 @@ if($isPosted && isset($_POST['imagePath']))
     $validUpload = $db->selectSome(new Image(), array(new Filter('path',$_POST['imagePath'])))[0];
     //Set the approved value to true
     $validUpload->approved = true;
+    //$validUpload->type = 'image';
     $validUpload->caption = $_POST['imageCaption'];
-
+    $db->save($validUpload);
+    $db->close();
+    $db = null;
 }
 
 $inputFile = new Input("imageUpload", "file");
@@ -135,6 +138,7 @@ EOT;
             </div>
             <div>
                 <input type="submit" value="Post to Gallery" />
+                <input type="reset" value="Cancel" />
                 <?php $inputImagePath->render(); ?>
             </div>
         </fieldset>
