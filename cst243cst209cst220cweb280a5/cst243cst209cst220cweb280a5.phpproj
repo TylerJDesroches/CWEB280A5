@@ -29,6 +29,7 @@
     <Folder Include="pages\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="pages\fileupload.php" />
     <Compile Include="pages\memberlogin.php" />
     <Compile Include="pages\memberregister.php" />
   </ItemGroup>
@@ -43,5 +44,8 @@
       <Project>{26fec34a-e5f6-4160-beb8-b2b652b2ccb7}</Project>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="pages\htmltemplate.html" />
   </ItemGroup>
 </Project>
