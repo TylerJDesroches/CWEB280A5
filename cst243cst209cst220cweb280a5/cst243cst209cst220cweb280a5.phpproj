@@ -28,6 +28,7 @@
     <Folder Include="pages\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="pages\Class1.php" />
     <Compile Include="pages\fileupload.php" />
     <Compile Include="pages\memberlogin.php" />
     <Compile Include="pages\memberresiter.php" />

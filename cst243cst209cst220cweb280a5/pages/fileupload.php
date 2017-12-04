@@ -92,8 +92,6 @@ if($isPosted && isset($_POST['imagePath']) && !isset($_POST['delete']))
     $validUpload = $db->selectSome(new Image(), array(new Filter('path',$_POST['imagePath'])))[0];
     //Set the approved value to true
     $validUpload->approved = true;
-    //$validUpload->type = 'image';
-    $validUpload->caption = $_POST['imageCaption'];
     $db->update($validUpload);
     $db->close();
     $db = null;
@@ -105,7 +103,7 @@ if(isset($uploadedFile))
 {
     $inputImagePath = new Input("imagePath", "hidden", $uploadedFile->path);
     $deleteButton = new Input("delete", "submit", 'Delete');
-    $inputCaption = new Input("imageCaption", 'text');
+    $inputCaption = new Input("imageCaption", 'text', null, 'caption', 'onblur="updateCaption();"');
 }
 //TODO: REMOVE THIS ONCE MEMBER IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 $memIDSet = new Input("memID", "hidden", 1);
@@ -125,6 +123,34 @@ EOT;
 <html>
 <head>
     <title>File Upload</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+        function updateCaption() {
+
+            $.ajax('Class1.php',
+                {
+                    "data": {
+                        "caption": document.getElementById("caption").value,
+                        "path": document.getElementById("imagePath").value
+                    },/*equivalent to inputs name and value attributes */
+                    "method": "POST",
+                    "success": function (data) {
+                        var newData = data.split(':');
+                        if (newData[0] == "Error") {
+                            viewModel.authorizedView(false);
+                            alert(newData[0] + ": " + newData[1]);
+                        }
+                        else {
+
+                            $(event.target).addClass(newData[1]);
+
+                            //Set the pet object's id in case the pet object is new
+                            //pet.id(newData[0]);
+                        }
+                    }
+                });
+        }
+    </script>
 </head>
 <body>
     <h1>File Upload</h1>
