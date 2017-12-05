@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="img\" />
+    <Folder Include="img\profileimg\" />
     <Folder Include="json\" />
     <Folder Include="style\" />
     <Folder Include="pages\" />
@@ -31,7 +32,7 @@
     <Compile Include="pages\Class1.php" />
     <Compile Include="pages\fileupload.php" />
     <Compile Include="pages\memberlogin.php" />
-    <Compile Include="pages\memberresiter.php" />
+    <Compile Include="pages\memberregister.php" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\classes\classes.phpproj">
