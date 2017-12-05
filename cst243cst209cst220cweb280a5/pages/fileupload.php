@@ -13,10 +13,13 @@ spl_autoload_register(function ($class) {
 });
 
 //If the current user is not signed in, they will be redirected to the login page
-//if(!isset($_SESSION['member']))
-//{
-//    header('Location: memberlogin.php');
-//}
+if(!isset($_SESSION['member']))
+{
+    header('Location: memberlogin.php');
+}
+
+//Get the member variables
+$member = get_object_vars($_SESSION['member']);
 
 //Check to see if the user tried to upload nothing
 $isEmptyUpload = !empty($_FILES['imageUpload']['error']);
@@ -53,7 +56,7 @@ if($isPosted && !$isEmptyUpload && isset($_FILES['imageUpload']))
 {
     $imageVars = $_FILES['imageUpload'];
     //Create an Image object
-    $uploadedFile = new Image($imageVars['name'], $imageVars['tmp_name'],$imageVars['size'],$imageVars['type'], 1);
+    $uploadedFile = new Image($imageVars['name'], $imageVars['tmp_name'],$imageVars['size'],$imageVars['type'], $member['memberId']);
     //Check to see if the uploaded image is valid
     $isValidPost = $uploadedFile->validate();
 
@@ -106,7 +109,6 @@ if(isset($uploadedFile))
     $inputCaption = new Input("imageCaption", 'text', null, 'caption', 'onblur="updateCaption();"');
 }
 //TODO: REMOVE THIS ONCE MEMBER IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-$memIDSet = new Input("memID", "hidden", 1);
 
 //If the user pressed "Upload" without selecting a file
 if($isEmptyUpload)
@@ -127,25 +129,13 @@ EOT;
     <script type="text/javascript">
         function updateCaption() {
 
-            $.ajax('Class1.php',
+            $.ajax('../json/updatecaption.php',
                 {
                     "data": {
                         "caption": document.getElementById("caption").value,
                         "path": document.getElementById("imagePath").value
-                    },/*equivalent to inputs name and value attributes */
-                    "method": "POST",
-                    "success": function (data) {
-                        var newData = data.split(':');
-                        if (newData[0] == "Error") {
-                            viewModel.authorizedView(false);
-                            alert(newData[0] + ": " + newData[1]);
-                        }
-                        else {
-
-                            $(event.target).addClass(newData[1]);
-
-                            //Set the pet object's id in case the pet object is new
-                            //pet.id(newData[0]);
+                    },
+                    "method": "POST"
                         }
                     }
                 });
@@ -163,7 +153,6 @@ EOT;
             </div>
             <div>
                 <input type="submit" value="Upload" />
-                <?php $memIDSet->render(); ?>
             </div>
         </fieldset>
     </form>
@@ -172,7 +161,8 @@ EOT;
         <fieldset>
             <div>
                 <label>Image Caption</label>
-                <?php  $inputCaption->render(); ?>
+                <?php //Check to see if the signed in user is the one who uploaded the file
+                if($member['memberId'] == $uploadedFile->memId){ $inputCaption->render(); }?>
             </div>
             <div>
                 <img src="<?=$uploadedFile->path?>" alt="Uploaded Image" />
