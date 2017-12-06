@@ -74,6 +74,7 @@ session_start();
         <li>
             <div><a data-bind="attr:{href: link}"><img data-bind="attr:{src: path}" /></a></div>
             <div data-bind="text: caption"></div>
+            <div data-bind=""></div>
 
         </li>
     </ul>
