@@ -7,6 +7,8 @@ session_start();
 spl_autoload_register(function ($class) {
     require_once '..\\..\\classes\\' .$class . '.php';
 });
+// Logged in member
+$member = get_object_vars($_SESSION['member']);
 
 // Open the database to query for the images
 $db = new DB3('../../db/imageranker.db');
@@ -46,24 +48,23 @@ $allMembers = array_combine($keys, $allMembers);
     <!--Include jquery-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript">
-        function updateCaption(event, imagePath) {
-
+        function updateCaption(imagePath, imageId) {
             $.ajax('../json/updatecaption.php',
                 {
                     "data": {
-                        "caption": $(event.target).value,
+                        "caption": $(event.target).val(),
                         "path": imagePath
                     },
                     "method": "POST",
                     "success": function(data) {
-
                         if(data != 'success')
                         {
-                            document.getElementById('captionError').innerHTML=data;
+                            $('#' + imageId).html(data)
+                            
                         }
                         else
                         {
-                            document.getElementById('captionError').innerHTML=null;
+                            $('#' + imageId).html(null)
                         }
                     }
                 });
@@ -80,7 +81,7 @@ $allMembers = array_combine($keys, $allMembers);
     </nav>
 
     <h1>Trending</h1>
-    <ul>
+    <ul class="topImages">
     <?php
     // Loop through all the top images and put them on the page
     foreach ($topImages as $currentImage)
@@ -98,26 +99,34 @@ $allMembers = array_combine($keys, $allMembers);
     { 
         // Get the current member associated with the posted image
         $currentMember = $allMembers[$currentImage->memId];
-        ?>
-    	<li>
-            <div><a href="details.php?id=<?= $currentImage->id ?>"><img src="<?= $currentImage->path ?>" /></a></div>
+    ?>
+    	<li class="allImages">
+            <div>
+                <img class="profile" src="<?= $currentMember->profileImgPath ?>" />
+                <?= $currentMember->alias ?>
+            </div>
 
-            <?php
-            if($currentMember->memberId === $currentImage->memId)
+            <div>
+                <a href="details.php?id=<?= $currentImage->id ?>"><img src="<?= $currentImage->path ?>" /></a>
+            </div>         
+
+                        <?php
+            if($member->memberId === $currentImage->memId)
             {
                 // Give them an update input instead of just text
                 ?>
-                <div><input type="text" value="<?= $currentImage->caption ?>" /></div>
+                <div class="error" id="<?= $currentImage->id ?>"></div>
+                <div><input type="text" value="<?= $currentImage->caption ?>" onblur="updateCaption('<?= $currentImage->path ?>', <?= $currentImage->id ?>);" /></div>
             <?php
             }
             else
             { ?>
-            <div>Caption: <?= $currentImage->caption ?></div>
+            <div><?= $currentImage->caption ?></div>
             <?php
             }
-            ?>
-            <div>Alias: <?= $currentMember->alias ?></div>
-            <div><img class="profile" src="<?= $currentMember->profileImgPath ?>" /></div>
+            ?>  
+
+            <hr />
         </li>
     <?php
     } ?>
