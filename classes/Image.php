@@ -72,7 +72,7 @@ class Image extends Model
 
     public function validate_caption()
     {
-        //Validate that caption is not larger that 144 characters
+            //Validate that caption is not larger that 144 characters
         return $this->checkProperty('caption', strlen($this->caption) <= 144, 'Captions can only be 144 characters or less');
 
     }

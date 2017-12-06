@@ -81,21 +81,21 @@ if($isPosted && !$isEmptyUpload && isset($_FILES['imageUpload']))
     else
     {
         //Display error messages
-        $errorMessage .=<<<EOT
+    $errorMessage .=<<<EOT
 
 <div>
     $uploadedFile->getError('size');
 </div>
 
 EOT;
-        $errorMessage .=<<<EOT
+    $errorMessage .=<<<EOT
 
 <div>
     $uploadedFile->getError('type');
 </div>
 
 EOT;
-        $errorMessage .=<<<EOT
+    $errorMessage .=<<<EOT
 
 <div>
     $uploadedFile->getError('path');
@@ -127,8 +127,8 @@ if(isset($uploadedFile))
     $deleteButton = new Input("delete", "submit", 'Delete');
     $inputCaption = new Input("imageCaption", 'text', null, 'caption', 'onblur="updateCaption();"');
 
-
-
+    
+    
 }
 
 
@@ -161,7 +161,7 @@ EOT;
                     },
                     "method": "POST",
                     "success": function(data) {
-
+                        
                         if(data != 'success')
                         {
                             document.getElementById('captionError').innerHTML=data;
@@ -198,19 +198,19 @@ EOT;
             <div>
                 <label>Image Caption</label>
                 <?php //Check to see if the signed in user is the one who uploaded the file
-              if($member['memberId'] == $uploadedFile->memId){ $inputCaption->render(); }?>
+                if($member['memberId'] == $uploadedFile->memId){ $inputCaption->render(); }?>
             </div>
             <div>
                 <img src="<?=$uploadedFile->path?>" alt="Uploaded Image" />
             </div>
             <div>
                 <input type="submit" value="Post to Gallery" />
-
+                
                 <?php $inputImagePath->render();
                       $deleteButton->render();?>
             </div>
         </fieldset>
-    </form>
-    <?php }?>
+     </form> 
+          <?php }?>
 </body>
 </html>
