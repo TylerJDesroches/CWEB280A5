@@ -87,8 +87,15 @@ $aliasInput->addError($isPosted && !$member->validate_alias(), $member->getError
 <html>
 <head>
     <title>Member Register</title>
+    <link href="../style/pagestyling.css" rel="stylesheet" />
 </head>
 <body>
+    <nav>
+        <a href="index.php">Gallery</a>
+        <a href="fileupload.php">Upload</a>
+        <a href="memberregister.php">Register</a>
+        <a href="memberlogin.php">Login</a>
+    </nav>
     <h1>Member Register</h1>
     <?php if (!$isValidMember)
           { ?>
