@@ -17,6 +17,9 @@ $isPosted = $_SERVER['REQUEST_METHOD'] === 'POST';
 // Stores if the user is authenticated
 $isAuthenticated = false;
 
+// A variable to hold the validated member
+$validatedMember = new Member();
+
 // Create a new member login
 $loginMember = new LoginMember();
 // If the form is posted, store the information from the form
@@ -41,8 +44,24 @@ if ($isValidPost)
     $db->close();
     $db = null;
 
-    // See if there is a single member that matches, and that their password matches
-    $isAuthenticated = count($logins) === 1 && password_verify($loginMember->password, $logins[0]->password);
+    // Keeps track of what login we are on
+    $count = 0;
+
+    // loop through all members that may have been passed back, and see which one matches.
+    while (!$isAuthenticated && $count < count($logins))
+    {
+        // Check each member in logins
+        $isAuthenticated = password_verify($loginMember->password, $logins[$count]->password);
+        
+        // If we found an authenticated member, then set that member to be the validatedMember
+        if ($isAuthenticated)
+        {
+            $validatedMember = $logins[$count];
+        }
+
+        // increment count
+        $count++;
+    }
 }
 
 // If the user isn't authenticated, generate the labels to show on screen
@@ -71,7 +90,7 @@ else // Otherwise, the user is authenticated, so redirect them
     // Regenerate the ID - best practice
     session_regenerate_id();
     // Store the member in their session to be accessed elsewhere
-    $_SESSION['member'] = $logins[0];
+    $_SESSION['member'] = $validatedMember;
     // Redirect
     header('Location: index.php');
 }
@@ -81,18 +100,15 @@ else // Otherwise, the user is authenticated, so redirect them
 <html>
 <head>
     <title>Login User</title>
-    <style>
-        form .error {
-            color: red;
-            display: block;
-        }
-
-        form label {
-            display: block;
-        }
-    </style>
+    <link href="../style/pagestyling.css" rel="stylesheet" />
 </head>
 <body>
+    <nav>
+        <a href="index.php">Gallery</a>
+        <a href="fileupload.php">Upload</a>
+        <a href="memberregister.php">Register</a>
+        <a href="memberlogin.php">Login</a>
+    </nav>
     <h1>Member Login</h1>
     <?php if (!$isValidPost || !$isAuthenticated)
           { ?>
