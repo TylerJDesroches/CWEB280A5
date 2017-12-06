@@ -33,6 +33,7 @@
     <Compile Include="json\updatecaption.php" />
     <Compile Include="pages\fileupload.php" />
     <Compile Include="pages\index.php" />
+    <Compile Include="pages\indexOLD.php" />
     <Compile Include="pages\memberlogin.php" />
     <Compile Include="pages\memberregister.php" />
   </ItemGroup>
