@@ -16,7 +16,7 @@ $filters = array(new Filter('approved', true)); // only images that are approved
 $topImages = $db->selectSomeOrder(new Image(), $orders, $filters);
 
 // Reduce the top images to just 5
-$topImages = array_slice($topImages, 0, 4);
+$topImages = array_slice($topImages, 0, 5);
 
 // Get all the images ordered by date
 $orders = array('id'=>'DESC');
@@ -46,15 +46,24 @@ $allMembers = array_combine($keys, $allMembers);
     <!--Include jquery-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript">
-        function updateCaption() {
+        function updateCaption(event, imagePath) {
 
             $.ajax('../json/updatecaption.php',
                 {
                     "data": {
-                        "caption": document.getElementById("caption").value,
-                        "path": document.getElementById("imagePath").value
+                        "caption": $(event.target).value,
+                        "path": imagePath
                     },
-                    "method": "POST"
+                    "method": "POST",
+                    "success": function(data) {
+
+                        if(data != 'success')
+                        {
+                            document.getElementById('captionError').innerHTML=data;
+                        }
+                        else
+                        {
+                            document.getElementById('captionError').innerHTML=null;
                         }
                     }
                 });
@@ -92,7 +101,21 @@ $allMembers = array_combine($keys, $allMembers);
         ?>
     	<li>
             <div><a href="details.php?id=<?= $currentImage->id ?>"><img src="<?= $currentImage->path ?>" /></a></div>
+
+            <?php
+            if($currentMember->memberId === $currentImage->memId)
+            {
+                // Give them an update input instead of just text
+                ?>
+                <div><input type="text" value="<?= $currentImage->caption ?>" /></div>
+            <?php
+            }
+            else
+            { ?>
             <div>Caption: <?= $currentImage->caption ?></div>
+            <?php
+            }
+            ?>
             <div>Alias: <?= $currentMember->alias ?></div>
             <div><img class="profile" src="<?= $currentMember->profileImgPath ?>" /></div>
         </li>
