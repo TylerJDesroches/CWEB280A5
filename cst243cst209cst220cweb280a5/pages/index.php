@@ -78,4 +78,3 @@ $allMembers = array_combine($keys, $allMembers);
     } ?>
     </ul>
 </body>
-</html>
