@@ -3,5 +3,6 @@
   <PropertyGroup>
     <StartAction>CurrentPage</StartAction>
     <RuntimePath>D:\PHP\v7.0\php.exe</RuntimePath>
+    <ProjectView>ShowAllFiles</ProjectView>
   </PropertyGroup>
 </Project>

@@ -20,12 +20,17 @@ if(!isset($_SESSION['member']))
 
 //Get the member variables
 $member = get_object_vars($_SESSION['member']);
+$db = new DB3('../../db/imageranker.db');
 
-if(isset($_POST['id']))
+if(isset($_POST['id']) && $db->selectSome(new Image(), array(new Filter('id', $_POST['id']))) != false)
 {
-    $db = new DB3('../../db/imageranker.db');
+
     $image = $db->selectSome(new Image(), array(new Filter('id', $_POST['id'])));
 
+}
+else //if the id isn't set or the image doesn't exist
+{
+    header('Location: index.php');
 }
 
 ?>

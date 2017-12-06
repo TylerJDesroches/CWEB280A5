@@ -31,6 +31,7 @@
   <ItemGroup>
     <Compile Include="json\getimages.php" />
     <Compile Include="json\updatecaption.php" />
+    <Compile Include="pages\details.php" />
     <Compile Include="pages\fileupload.php" />
     <Compile Include="pages\index.php" />
     <Compile Include="pages\memberlogin.php" />
