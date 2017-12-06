@@ -13,10 +13,13 @@ spl_autoload_register(function ($class) {
 });
 
 //If the current user is not signed in, they will be redirected to the login page
-//if(!isset($_SESSION['member']))
-//{
-//    header('Location: memberlogin.php');
-//}
+if(!isset($_SESSION['member']))
+{
+    header('Location: memberlogin.php');
+}
+
+//Get the member variables
+$member = get_object_vars($_SESSION['member']);
 
 //Check to see if the user tried to upload nothing
 $isEmptyUpload = !empty($_FILES['imageUpload']['error']);
@@ -53,7 +56,7 @@ if($isPosted && !$isEmptyUpload && isset($_FILES['imageUpload']))
 {
     $imageVars = $_FILES['imageUpload'];
     //Create an Image object
-    $uploadedFile = new Image($imageVars['name'], $imageVars['tmp_name'],$imageVars['size'],$imageVars['type'], 1);
+    $uploadedFile = new Image($imageVars['name'], $imageVars['tmp_name'],$imageVars['size'],$imageVars['type'], $member['memberId']);
     //Check to see if the uploaded image is valid
     $isValidPost = $uploadedFile->validate();
 
@@ -92,8 +95,6 @@ if($isPosted && isset($_POST['imagePath']) && !isset($_POST['delete']))
     $validUpload = $db->selectSome(new Image(), array(new Filter('path',$_POST['imagePath'])))[0];
     //Set the approved value to true
     $validUpload->approved = true;
-    //$validUpload->type = 'image';
-    $validUpload->caption = $_POST['imageCaption'];
     $db->update($validUpload);
     $db->close();
     $db = null;
@@ -105,10 +106,9 @@ if(isset($uploadedFile))
 {
     $inputImagePath = new Input("imagePath", "hidden", $uploadedFile->path);
     $deleteButton = new Input("delete", "submit", 'Delete');
-    $inputCaption = new Input("imageCaption", 'text');
+    $inputCaption = new Input("imageCaption", 'text', null, 'caption', 'onblur="updateCaption();"');
 }
 //TODO: REMOVE THIS ONCE MEMBER IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-$memIDSet = new Input("memID", "hidden", 1);
 
 //If the user pressed "Upload" without selecting a file
 if($isEmptyUpload)
@@ -125,6 +125,22 @@ EOT;
 <html>
 <head>
     <title>File Upload</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+        function updateCaption() {
+
+            $.ajax('../json/updatecaption.php',
+                {
+                    "data": {
+                        "caption": document.getElementById("caption").value,
+                        "path": document.getElementById("imagePath").value
+                    },
+                    "method": "POST"
+                        }
+                    }
+                });
+        }
+    </script>
 </head>
 <body>
     <h1>File Upload</h1>
@@ -137,7 +153,6 @@ EOT;
             </div>
             <div>
                 <input type="submit" value="Upload" />
-                <?php $memIDSet->render(); ?>
             </div>
         </fieldset>
     </form>
@@ -146,7 +161,8 @@ EOT;
         <fieldset>
             <div>
                 <label>Image Caption</label>
-                <?php  $inputCaption->render(); ?>
+                <?php //Check to see if the signed in user is the one who uploaded the file
+                if($member['memberId'] == $uploadedFile->memId){ $inputCaption->render(); }?>
             </div>
             <div>
                 <img src="<?=$uploadedFile->path?>" alt="Uploaded Image" />

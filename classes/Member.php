@@ -49,8 +49,8 @@ class Member extends Model
      */
     public function validateHashedPassword()
     {
-        return $this->checkProperty('hashedPassword',
-            !empty($this->hashedPassword) && strlen($this->hashedPassword) <= 255, "%s must be specified and below 256 characters");
+        return $this->checkProperty('hashedPassword', !empty($this->hashedPassword),'"%s must be specified ')
+            || $this->checkProperty('hashedPassword', strlen($this->hashedPassword) <= 255, "%s must be below 256 characters");
     }
     /**
      * A validator function for the password field that checks if
@@ -62,7 +62,7 @@ class Member extends Model
     {
         return $this->checkProperty('password',
             !empty($this->password) && ((strlen($this->password) >=8 && strlen($this->password) <= 16) ||
-            $this->password == $this->hashedPassword), '%s must be specified');
+            $this->password == $this->hashedPassword), '%s must be between 8 and 16 characters.');
     }
     /**
      * This is a validator function that checks if the alias is
@@ -71,7 +71,7 @@ class Member extends Model
      */
     public function validate_alias()
     {
-        return $this->checkProperty('alias', !empty( $this->alias ) && strlen($this->alias) <= 15 );
+        return $this->checkProperty('alias', !empty( $this->alias ) && strlen($this->alias) <= 15, '%s must be less than 15 characters' );
     }
     /**
      * A validator function for profileImgPath that checks if the path is not empty
@@ -86,9 +86,11 @@ class Member extends Model
      */
     public function validate_profileImgType()
     {
-        return $this->checkProperty('profileImgType',
-            empty($this->profileImgType) || $this->profileImgType == 'image/png' || $this->profileImgType == 'image/jpeg' ||
-            $this->profileImgType == 'image/bmp' || $this->profileImgType == 'image/webp', '%s must be a valid img type');
+        return $this->checkProperty('profileImgType', !empty($this->profileImgType), '%s must be specified' ) &&
+            $this->checkProperty('profileImgType',
+                $this->profileImgType == 'image/png' || $this->profileImgType == 'image/jpeg' ||
+                $this->profileImgType == 'image/bmp' || $this->profileImgType == 'image/webp'
+                ,'%s must be a valid img type');
     }
     /**
      * A validator function for profileImgSize that checks
@@ -97,7 +99,7 @@ class Member extends Model
     public function validate_profileImgSize()
     {
         return $this->checkProperty('profileImgSize',
-            empty($this->profileImgSize) || $this->profileImgSize <= 15360, '%s must be lower than 15kb');
+            !empty($this->profileImgSize) && $this->profileImgSize <= 15360, '%s must be lower than 15kb');
     }
 
 
@@ -133,7 +135,7 @@ class Member extends Model
         $this->setLabel('profileImgSize', 'Profile Image');
     }
 
-    // GETTERS AND SETTERS
+    // FUNCTIONS
 
     /**
      * Takes in a hashed password and sets the

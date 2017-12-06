@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 use DB3\DB3;
 use DB3\Filter;
@@ -48,4 +49,18 @@ $db = null;
 
     </ul>
 </body>
+=======
+<?php
+
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>index</title>
+</head>
+<body>
+    <h1>index</h1>
+</body>
+>>>>>>> master
 </html>
