@@ -49,4 +49,7 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="style\pagestyling.css" />
+  </ItemGroup>
 </Project>

@@ -100,18 +100,15 @@ else // Otherwise, the user is authenticated, so redirect them
 <html>
 <head>
     <title>Login User</title>
-    <style>
-        form .error {
-            color: red;
-            display: block;
-        }
-
-        form label {
-            display: block;
-        }
-    </style>
+    <link href="../style/pagestyling.css" rel="stylesheet" />
 </head>
 <body>
+    <nav>
+        <a href="index.php">Gallery</a>
+        <a href="fileupload.php">Upload</a>
+        <a href="memberregister.php">Register</a>
+        <a href="memberlogin.php">Login</a>
+    </nav>
     <h1>Member Login</h1>
     <?php if (!$isValidPost || !$isAuthenticated)
           { ?>
