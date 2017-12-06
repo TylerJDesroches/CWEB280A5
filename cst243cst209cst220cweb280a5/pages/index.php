@@ -1,28 +1,5 @@
-<<<<<<< HEAD
 <?php
-use DB3\DB3;
-use DB3\Filter;
-
 session_start();
-
-spl_autoload_register(function ($class) {
-    require_once '..\\..\\classes\\' .$class . '.php';
-});
-
-// Open the database to query for the images
-$db = new DB3('../../db/imageranker.db');
-// Get the images ordered by views... Would love to use sql to only select the top 5, but our DB3 isn't designed for this.
-$orders = array('views'=>'DESC');
-$filters = array(new Filter('approved', true)); // only images that are approved
-$topImages = $db->selectSomeOrder(new Image(), $orders, $filters);
-// Get all the images ordered by date
-$orders = array('id'=>'DESC');
-$allImages = $db->selectSomeOrder(new Image(), $orders, $filters);
-
-// Close the database, real quick like sanic
-$db->close();
-$db = null;
-
 
 ?>
 
@@ -30,37 +7,74 @@ $db = null;
 <html>
 <head>
     <title>Image Ranker</title>
+    <!--Include knockout and jquery-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+
+    <script>
+
+        var viewModel = {
+            topImages: ko.observableArray(),
+            allImages: ko.observableArray(),
+            getImages: function ()
+            {
+                // make the json/ajax call
+                $.getJSON('../json/getimages.php', function (jsonImages)
+                {
+                    // Success function
+                    observableAllImages = Array();
+                    for (var i = 0; i < jsonImages['allImages'].length; i++) {
+                        observableAllImages.push(new observableImage(jsonImages['allImages'][i]));
+                    }
+                    viewModel.allImages(observableAllImages);
+
+                    observableTopImages = Array();
+                    for (var i = 0; i < jsonImages['topImages'].length; i++) {
+                        observableTopImages.push(new observableImage(jsonImages['topImages'][i]));
+                    }
+                    viewModel.topImages(observableTopImages);
+
+                });
+            }
+        };
+
+        // On document load
+        $(function ()
+        {
+            // Get the images
+            viewModel.getImages();
+            // Bind the view model object to the DOM
+            ko.applyBindings(viewModel);
+        });
+
+        // An image object
+        function observableImage(jsonObj)
+        {
+            this.id = ko.observable(jsonObj.id);
+            this.path = ko.observable(jsonObj.path);
+            this.memId = ko.observable(jsonObj.memId);
+            this.caption = ko.observable(jsonObj.caption);
+            this.views = ko.observable(jsonObj.views);
+            this.approved = ko.observable(jsonObj.approved);
+            this.link = 'details.php?id=' + this.id();
+
+        }
+
+    </script>
+
 </head>
 <body>
     <h1>Trending</h1>
-    <ul>
-        <?php
-        // Only loop for the first 5 images
-        for ($i = 0; $i < 5 && $i < count($topImages); $i++)
-        {?>
-        	<li><img src="<?= htmlentities($topImages[$i]->path) ?>" /></li>
-        <?php
-        }
-        ?>
+    <ul data-bind="foreach: topImages">
+        <li>
+            <div><a data-bind="attr:{href: link}"><img data-bind="attr:{src: path}" /></a></div>
+            <div></div>
+        </li>
     </ul>
 
     <h1>All Images</h1>
-    <ul>
-
+    <ul data-bind="foreach: allImages">
+        <li><a data-bind="attr:{href: link}"><img data-bind="attr:{src: path}" /></a></li>
     </ul>
 </body>
-=======
-<?php
-
-?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>index</title>
-</head>
-<body>
-    <h1>index</h1>
-</body>
->>>>>>> master
 </html>
