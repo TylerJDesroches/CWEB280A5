@@ -81,27 +81,9 @@ if($isPosted && !$isEmptyUpload && isset($_FILES['imageUpload']))
     else
     {
         //Display error messages
-    $errorMessage .=<<<EOT
-
-<div>
-    $uploadedFile->getError('size');
-</div>
-
-EOT;
-    $errorMessage .=<<<EOT
-
-<div>
-    $uploadedFile->getError('type');
-</div>
-
-EOT;
-    $errorMessage .=<<<EOT
-
-<div>
-    $uploadedFile->getError('path');
-</div>
-
-EOT;
+        $errorMessage .= $uploadedFile->getError('size');
+        $errorMessage .= $uploadedFile->getError('type');
+        $errorMessage .= $uploadedFile->getError('path');
     }
 }
 
@@ -119,27 +101,21 @@ if($isPosted && isset($_POST['imagePath']) && !isset($_POST['delete']))
 }
 
 $inputFile = new Input("imageUpload", "file");
-
 //If a file has been selected to upload
 if(isset($uploadedFile))
 {
     $inputImagePath = new Input("imagePath", "hidden", $uploadedFile->path);
     $deleteButton = new Input("delete", "submit", 'Delete');
     $inputCaption = new Input("imageCaption", 'text', null, 'caption', 'onblur="updateCaption();"');
-
-    
-    
 }
-
-
+//TODO: REMOVE THIS ONCE MEMBER IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //If the user pressed "Upload" without selecting a file
 if($isEmptyUpload)
 {
     $errorMessage .= <<<EOT
-<div>
     <p>Must select a file to upload<p>
-</div>
+
 EOT;
 }
 
@@ -157,18 +133,9 @@ EOT;
                 {
                     "data": {
                         "caption": document.getElementById("caption").value,
-                        "path": document.getElementById("imagePath").value,
+                        "path": document.getElementById("imagePath").value
                     },
-                    "method": "POST",
-                    "success": function(data) {
-                        
-                        if(data != 'success')
-                        {
-                            document.getElementById('captionError').innerHTML=data;
-                        }
-                        else
-                        {
-                            document.getElementById('captionError').innerHTML=null;
+                    "method": "POST"
                         }
                     }
                 });
@@ -177,11 +144,8 @@ EOT;
 </head>
 <body>
     <h1>File Upload</h1>
-    <div>
-        <p id="captionError"></p>
-    </div>
-    <?=$errorMessage?>
     <?php if(!$isPosted || !$isValidPost) { ?>
+    <?=$errorMessage?>
     <form action="#" method="post" enctype="multipart/form-data">
         <fieldset>
             <div>

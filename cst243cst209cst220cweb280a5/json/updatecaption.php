@@ -13,15 +13,7 @@ if($isPosted && isset($_POST['caption']) && isset($_POST['path']))
     $db = new DB3('../../db/imageranker.db');
     $image = $db->selectSome(new Image(), array(new Filter('path', $_POST['path'])))[0];
     $image->caption = $_POST['caption'];
-    if($image->validate_caption())
-    {
-        echo $db->update($image)? 'success' : 'fail';
-    }
-    else
-    {
-        echo $image->getError('caption');
-    }
-
+    echo $db->update($image)? $image->id . ':success' : $image->id. ':failure';
     $db->close();
     $db = null;
 }
