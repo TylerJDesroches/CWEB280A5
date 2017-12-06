@@ -125,7 +125,7 @@ if(isset($uploadedFile))
 {
     $inputImagePath = new Input("imagePath", "hidden", $uploadedFile->path);
     $deleteButton = new Input("delete", "submit", 'Delete');
-    $inputCaption = new Input("imageCaption", 'text', null, 'caption', 'onblur="updateCaption();"');
+    $inputCaption = new Input("imageCaption", 'text', $image->caption, 'caption', 'onblur="updateCaption();"');
 
     
     
