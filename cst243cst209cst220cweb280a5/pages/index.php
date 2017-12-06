@@ -45,9 +45,31 @@ $allMembers = array_combine($keys, $allMembers);
     <title>Image Ranker</title>
     <!--Include jquery-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+        function updateCaption() {
 
+            $.ajax('../json/updatecaption.php',
+                {
+                    "data": {
+                        "caption": document.getElementById("caption").value,
+                        "path": document.getElementById("imagePath").value
+                    },
+                    "method": "POST"
+                        }
+                    }
+                });
+        }
+    </script>
+    <link href="../style/pagestyling.css" rel="stylesheet" />
 </head>
 <body>
+    <nav>
+        <a href="index.php">Gallery</a>
+        <a href="fileupload.php">Upload</a>
+        <a href="memberregister.php">Register</a>
+        <a href="memberlogin.php">Login</a>
+    </nav>
+
     <h1>Trending</h1>
     <ul>
     <?php
@@ -72,7 +94,7 @@ $allMembers = array_combine($keys, $allMembers);
             <div><a href="details.php?id=<?= $currentImage->id ?>"><img src="<?= $currentImage->path ?>" /></a></div>
             <div>Caption: <?= $currentImage->caption ?></div>
             <div>Alias: <?= $currentMember->alias ?></div>
-            <div><img href="<?= $currentMember->profileImgPath ?>" /></div>
+            <div><img class="profile" src="<?= $currentMember->profileImgPath ?>" /></div>
         </li>
     <?php
     } ?>
