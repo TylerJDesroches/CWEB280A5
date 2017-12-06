@@ -15,7 +15,7 @@ if($isPosted && isset($_POST['caption']) && isset($_POST['path']))
     $image->caption = $_POST['caption'];
     if($image->validate_caption())
     {
-        echo $db->update($image)? 'success' : 'fail';
+        echo $db->update($image)? 'success' : 'failed to update caption';
     }
     else
     {
