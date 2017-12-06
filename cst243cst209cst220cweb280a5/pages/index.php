@@ -66,15 +66,16 @@ session_start();
 <body>
     <h1>Trending</h1>
     <ul data-bind="foreach: topImages">
-        <li>
-            <div><a data-bind="attr:{href: link}"><img data-bind="attr:{src: path}" /></a></div>
-            <div></div>
-        </li>
+        <li><a data-bind="attr:{href: link}"><img data-bind="attr:{src: path}" /></a></li>
     </ul>
 
     <h1>All Images</h1>
     <ul data-bind="foreach: allImages">
-        <li><a data-bind="attr:{href: link}"><img data-bind="attr:{src: path}" /></a></li>
+        <li>
+            <div><a data-bind="attr:{href: link}"><img data-bind="attr:{src: path}" /></a></div>
+            <div data-bind="text: caption"></div>
+
+        </li>
     </ul>
 </body>
 </html>
