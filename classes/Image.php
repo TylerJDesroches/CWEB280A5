@@ -70,6 +70,13 @@ class Image extends Model
         //TODO: Add validation to check if user is uploading image for gallery or for profile image. Limit profile image to 15KB
     }
 
+    public function validate_caption()
+    {
+        //Validate that caption is not larger that 144 characters
+        return $this->checkProperty('caption', strlen($this->caption) <= 144, 'Captions can only be 144 characters or less');
+
+    }
+
     /**
      * Makes a new image object
      * @param mixed $name name of the image
