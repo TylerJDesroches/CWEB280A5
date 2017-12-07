@@ -16,6 +16,7 @@ $db->exec($image->tableDefinition());
 $member = new Member();
 $db->exec($member->tableDefinition());
 
+
 // Get the images ordered by views... Would love to use sql to only select the top 5, but our DB3 isn't designed for this.
 $orders = array('views'=>'DESC');
 $filters = array(new Filter('approved', true)); // only images that are approved
@@ -43,9 +44,9 @@ if (isset($_SESSION['member']))
 
 // Create an array where the key is the id of the member
 $keys = array();
-foreach ($allMembers as $member)
+foreach ($allMembers as $currentMember)
 {
-	$keys[] = $member->memberId;
+	$keys[] = $currentMember->memberId;
 }
 $allMembers = array_combine($keys, $allMembers);
 
@@ -121,6 +122,7 @@ $allMembers = array_combine($keys, $allMembers);
             </div>         
 
                         <?php
+        var_dump($member);
             if($member->memberId === $currentImage->memId)
             {
                 // Give them an update input instead of just text
