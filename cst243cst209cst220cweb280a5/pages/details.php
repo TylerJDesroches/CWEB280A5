@@ -96,10 +96,12 @@ if($member['memberId'] === $image->memId)
                         $.ajax('../json/commentjsondecode',
                             {
                                 'data': {
-                                    "comment": document.getElementById('newComment').value,
-                                    "memberId": 
+                                    "comment": document.getElementById('newComment').value
+                                    //"memberId": 
 
-                                }
+
+
+                                },
                                 'method': 'POST',
                                 'success': function(data) {
                                     if(data === 'success')
