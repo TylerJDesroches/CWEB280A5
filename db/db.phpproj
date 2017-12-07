@@ -14,7 +14,4 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <IncludeDebugInformation>false</IncludeDebugInformation>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Include="imageranker.db" />
-  </ItemGroup>
 </Project>

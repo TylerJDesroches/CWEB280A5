@@ -57,7 +57,7 @@ class Comment extends Model
     }
     /**
      * A validator function to make sure
-     * the imageId is empty and is an integer.
+     * the imageId isn't empty and is an integer.
      * @return boolean
      */
     public function validate_imageId()

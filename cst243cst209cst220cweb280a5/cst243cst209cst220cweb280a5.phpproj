@@ -29,6 +29,8 @@
     <Folder Include="pages\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="json\commentjson.php" />
+    <Compile Include="json\commentjsondecode.php" />
     <Compile Include="json\getimages.php" />
     <Compile Include="json\updatecaption.php" />
     <Compile Include="pages\details.php" />
