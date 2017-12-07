@@ -91,11 +91,15 @@ if($member['memberId'] === $image->memId)
                     })
 
                 },
-                postComment: function(comment, event) {
-                    
+                postComment: function (comment, event) {
+                    alert(comment[0]);
                         $.ajax('../json/commentjsondecode',
                             {
-                                'data': { "commentJSON": ko.toJSON(comment) },
+                                'data': {
+                                    "comment": document.getElementById('newComment').value,
+                                    "memberId": 
+
+                                }
                                 'method': 'POST',
                                 'success': function(data) {
                                     if(data === 'success')
@@ -154,9 +158,9 @@ if($member['memberId'] === $image->memId)
         </nav>
         <h1>Image Detail</h1>
         <div>
-            <img src="<?php echo($origMember->profileImgPath);?>" width="50px" height="50px" />
+            <img src="<?=$origMember->profileImgPath?>" width="50px" height="50px" />
             <p>
-                User: <?php echo($origMember->alias);?>
+                User: <?=$origMember->alias?>
             </p>
         </div>
         <div>
