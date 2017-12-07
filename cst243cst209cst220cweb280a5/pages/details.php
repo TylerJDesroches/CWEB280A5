@@ -29,6 +29,9 @@ $isOrigUploader = false;
 
 $db = new DB3('../../db/imageranker.db');
 
+//Get all the images from the database (for the previous and next page)
+$allImages = $db->selectSomeOrder(new Image(), array('views'=>'DESC'), array());
+
 if(isset($_GET['id']) && $db->selectSome(new Image(), array(new Filter('id', $_GET['id']))) != false)
 {
 
@@ -62,6 +65,29 @@ if($member['memberId'] === $image->memId)
     $imagePath = new Input('imagePath', 'hidden', $image->path, 'imagePath');
     $isOrigUploader = true;
 }
+
+$prevUrl = "";
+$nextUrl = "";
+// Loop through all the images and find the previous and next id's for the links
+$done = false;
+for ($i = 0; $i < count($allImages) && !$done; $i++)
+{
+    // Check if we are on the current image
+	if ($allImages[$i]->id === $image->id)
+    {
+    	// take the id previous and next if possible
+        if ($i >= 1)
+        {
+        	$prevUrl = "href='details.php?id={$allImages[$i - 1]->id}'";
+        }
+        if ($i < count($allImages) - 1)
+        {
+        	$nextUrl = "href='details.php?id={$allImages[$i + 1]->id}'";
+        }
+        $done = true;
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -203,5 +229,9 @@ if($member['memberId'] === $image->memId)
                 </tr>
             </tbody>
         </table>
+
+        <a <?= $prevUrl ?>>Previous</a> | 
+        <a <?= $nextUrl ?>>Next</a>
+
     </body>
 </html>
