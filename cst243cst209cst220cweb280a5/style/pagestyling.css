@@ -18,6 +18,14 @@ img {
     height:400px;
 }
 
+/*Alternating colors*/
+.allImages:nth-child(odd){
+    background-color:lightblue;
+}
+
+.allImages:nth-child(even) {
+    background-color:lightcyan;
+}
 
 /*Trending page CSS*/
 .allImages img {
