@@ -15,7 +15,7 @@ class Member extends Model
     public $memberId;
     public $email;
     public $password;
-    public $hashedPassword;
+    private $hashedPassword;
     public $alias;
     public $profileImgPath;
     private $profileImgType;
