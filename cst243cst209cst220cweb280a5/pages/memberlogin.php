@@ -37,6 +37,10 @@ if ($isValidPost)
 	// open db
     $db = new DB3('../../db/imageranker.db');
 
+    // Make sure the member table exists!
+    $member = new Member();
+    $db->exec($member->tableDefinition());
+
     //see if the member exists based off of the email OR alias
     $filters = array(new Filter('email', $loginMember->aliasEmail), new Filter('alias', $loginMember->aliasEmail));
     $logins = $db->selectSome(new Member(), $filters, false); // Use the OR operator
@@ -52,7 +56,7 @@ if ($isValidPost)
     {
         // Check each member in logins
         $isAuthenticated = password_verify($loginMember->password, $logins[$count]->password);
-        
+
         // If we found an authenticated member, then set that member to be the validatedMember
         if ($isAuthenticated)
         {

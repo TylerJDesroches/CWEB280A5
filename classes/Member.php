@@ -44,15 +44,6 @@ class Member extends Model
             && $this->checkProperty('email',filter_var($this->email,FILTER_VALIDATE_EMAIL), '%s should be a valid email address');
     }
     /**
-     * A validator function that checks if the hashed
-     * password is not empty OR less than 255 characters.
-     */
-    public function validateHashedPassword()
-    {
-        return $this->checkProperty('hashedPassword', !empty($this->hashedPassword),'"%s must be specified ')
-            || $this->checkProperty('hashedPassword', strlen($this->hashedPassword) <= 255, "%s must be below 256 characters");
-    }
-    /**
      * A validator function for the password field that checks if
      * the password is not empty and 8-16 characters, or
      * the password matches the hashed password
@@ -120,8 +111,6 @@ class Member extends Model
         $this->defineColumn('email', Type::VRC, 200, false,false,false);
         // alias
         $this->defineColumn('alias', Type::VRC, 15, false);
-        // Encrypted Password
-        $this->defineColumn('hashedPassword', Type::VRC, 255,false);
         // path
         $this->defineColumn('profileImgPath',Type::VRC, null, false);
 

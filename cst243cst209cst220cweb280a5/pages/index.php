@@ -7,11 +7,15 @@ session_start();
 spl_autoload_register(function ($class) {
     require_once '..\\..\\classes\\' .$class . '.php';
 });
-// Logged in member
-$member = get_object_vars($_SESSION['member']);
 
 // Open the database to query for the images
 $db = new DB3('../../db/imageranker.db');
+// Define all tables in case this is the first run
+$image = new Image();
+$db->exec($image->tableDefinition());
+$member = new Member();
+$db->exec($member->tableDefinition());
+
 // Get the images ordered by views... Would love to use sql to only select the top 5, but our DB3 isn't designed for this.
 $orders = array('views'=>'DESC');
 $filters = array(new Filter('approved', true)); // only images that are approved
@@ -30,6 +34,12 @@ $allMembers = $db->selectAll(new Member());
 // Close the database, real quick like sanic
 $db->close();
 $db = null;
+
+// Get the current logged in member if there is one (otherwise it will just default to the empty member created earlier.
+if (isset($_SESSION['member']))
+{
+	$member = get_object_vars($_SESSION['member']);
+}
 
 // Create an array where the key is the id of the member
 $keys = array();
