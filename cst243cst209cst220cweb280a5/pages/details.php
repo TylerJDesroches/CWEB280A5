@@ -31,11 +31,16 @@ $db = new DB3('../../db/imageranker.db');
 
 //Get all the images from the database (for the previous and next page)
 $allImages = $db->selectSomeOrder(new Image(), array('views'=>'DESC'), array());
-
-if(isset($_GET['id']) && $db->selectSome(new Image(), array(new Filter('id', $_GET['id']))) != false)
+//if the id is set in the GET superglobals
+if(isset($_GET['id']))
 {
-
+    //get the corresponding image
     $image = $db->selectSome(new Image(), array(new Filter('id', $_GET['id'])))[0];
+}
+
+//if the id returned an image and the image is approved
+if(isset($_GET['id']) && $image != false && $image->approved )
+{
     //Increment the view count
     $image->views += 1;
     $db->update($image);
@@ -44,20 +49,26 @@ if(isset($_GET['id']) && $db->selectSome(new Image(), array(new Filter('id', $_G
     $comment = new Comment();
     $db->exec($comment->tableDefinition());
 
+    //Get the member who originally posted the image
     $origMember = $db->selectSome(new Member(), array(new Filter('memberId', $image->memId)))[0];
-
     $db->close();
     $db = null;
+
+    //create a hidden input for the image id
     $imageId = new Input('imageId', 'hidden', $image->id, 'imageId');
 }
 else //if the id isn't set or the image doesn't exist
 {
+    $db->close();
+    $db = null;
+    //Redirect the user back to the gallery page
     header('Location: index.php');
 }
 
+//Create a new input for signed in users to post a comment
 $newComment = new Input('newComment', 'text', null, 'newComment');
 //If the logged in user is the original uploader
-if($member['memberId'] === $image->memId)
+if($isMember && $member['memberId'] === $image->memId)
 {
     //Create an input for the caption
     $inputCaption = new Input("imageCaption", 'text', $image->caption, 'caption', 'onblur="updateCaption();"');
@@ -97,6 +108,7 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
         <script type="text/javascript">
+            
             var viewModel = {
                 comments: ko.observableArray(),
                 getComments: function() {
@@ -117,13 +129,13 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
                     })
 
                 },
-                postComment: function (comment, event) {
-                    alert(comment[0]);
-                        $.ajax('../json/commentjsondecode',
+                postComment: function () {
+                    alert("hello");
+                        $.ajax('../json/commentjsondecode.php',
                             {
                                 'data': {
-                                    "comment": document.getElementById('newComment').value
-                                    //"memberId": 
+                                    "comment": document.getElementById('newComment').value,
+                                    'imageId': document.getElementById('imageId').value
 
 
 
@@ -208,7 +220,7 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
         </div>
         <img src="<?=$image->path?>" />
         <h2>Comments</h2>
-        <?php if(isset($_SESSION['member'])) {?>
+        <?php if($isMember) {?>
         <label>Post a new comment</label>
         <?php $newComment->render(); ?>
         <button data-bind="click: viewModel.postComment" >Post</button>

@@ -9,7 +9,7 @@ spl_autoload_register(function ($class) {
 });
 
 $db = new DB3('../../db/imageranker.db');
-$comments = $db->selectSomeOrder(new Comment(), array('ranking'), array(new Filter('imageId', $_GET['imageId'])));
+$comments = $db->selectSomeOrder(new Comment(), array('ranking' => 'DESC'), array(new Filter('imageId', $_GET['imageId'])));
 $db->close();
 $db = null;
 
