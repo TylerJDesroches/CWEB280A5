@@ -77,7 +77,7 @@ class Member extends Model
      */
     public function validate_profileImgType()
     {
-        return $this->checkProperty('profileImgType', !empty($this->profileImgType), '%s must be specified' ) &&
+        return $this->checkProperty('profileImgType', !empty($this->profileImgType), '%s must be a valid img type' ) &&
             $this->checkProperty('profileImgType',
                 $this->profileImgType == 'image/png' || $this->profileImgType == 'image/jpeg' ||
                 $this->profileImgType == 'image/bmp' || $this->profileImgType == 'image/webp'

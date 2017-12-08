@@ -7,7 +7,7 @@
     display: block;
 }
 
-form label {
+label {
     display: block;
 }
 
@@ -19,12 +19,12 @@ img {
 }
 
 /*Alternating colors*/
-.allImages:nth-child(odd){
+.allImages:nth-child(odd), tr:nth-child(odd){
     background-color:lightblue;
 }
 
-.allImages:nth-child(even) {
-    background-color:lightcyan;
+.allImages:nth-child(even), tr:nth-child(even) {
+    background-color: lightcyan;
 }
 
 /*Trending page CSS*/

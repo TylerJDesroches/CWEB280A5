@@ -34,7 +34,7 @@ $comment = new Comment();
 $db->exec($comment->tableDefinition());
 
 //Get all the images from the database (for the previous and next page)
-$allImages = $db->selectSomeOrder(new Image(), array('views'=>'DESC'), array());
+$allImages = $db->selectSomeOrder(new Image(), array('views'=>'DESC'), array(new Filter("approved", 1)));
 //if the id is set in the GET superglobals
 if(isset($_GET['id']))
 {
@@ -62,7 +62,7 @@ else //if the id isn't set or the image doesn't exist
     $db->close();
     $db = null;
     //Redirect the user back to the gallery page
-    //header('Location: index.php');
+    header('Location: index.php');
 }
 
 //Create a new input for signed in users to post a comment
@@ -140,10 +140,12 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
                                 if(data === "success")
                                 {
                                     viewModel.getComments();
+                                    document.getElementById('newComment').value = "";
+                                    document.getElementById('errorMessage').innerHTML = "";
                                 }
                                 else
                                 {
-                                    alert("Error: " + data);
+                                    document.getElementById('errorMessage').innerHTML = data;
                                 }
                             }
                         });
@@ -163,15 +165,22 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
             }
 
             function vote(comment, event) {
+                var isUp = $(event.target).text() == "Upvote" ? 1 : 0;
                 $.ajax('../json/vote.php',
                     {
                         "data": {
                             "id": comment.commentId,
-                            "isUp": $(event.target).text() == "Upvote" ? 1 : 0
+                            "isUp": isUp
                         },
                         "method": "POST",
                         "success": function (data) {
-                            viewModel.getComments();
+                            if (data == "success") {
+                                viewModel.getComments();
+                            }
+                            else {
+                                alert(data);
+                            }
+                            
                         }
                     });
             }
@@ -213,9 +222,9 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
         </nav>
         <h1>Image Detail</h1>
         <div>
-            <img class="profile" src="<?=$origMember->profileImgPath?>" />
+            <img class="profile" src="<?=htmlentities($origMember->profileImgPath)?>" />
             <p>
-                User: <?=$origMember->alias?>
+                User: <?= htmlentities($origMember->alias)?>
             </p>
         </div>
         <div>
@@ -230,12 +239,13 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
                   $imagePath->render();
                   } else { ?>
             <h2>
-                <?=$image->caption?>
+                <?=htmlentities($image->caption)?>
             </h2><?php } ?>
         </div>
-        <img src="<?=$image->path?>" />
+        <img src="<?=htmlentities($image->path)?>" />
         <h2>Comments</h2>
         <?php if($isMember) {?>
+        <div class="error" id="errorMessage"></div>
         <label>Post a new comment</label>
         <?php $newComment->render(); ?>
         <button data-bind="click: viewModel.postComment" >Post</button>
@@ -244,10 +254,12 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
             <thead>
                 <tr>
 
-                    <th>Member</th>
-                    <th></th>
-                    <th>Ranking</th>
-                    <th>Description</th>
+                    <th>Profile</th>
+                    <th>Alias</th>
+                    <th>Points</th>
+                    <th>Comment</th>
+                    <th>Upvote</th>
+                    <th>Downvote</th>
                 </tr>
             </thead>
             <tbody data-bind="foreach: comments">

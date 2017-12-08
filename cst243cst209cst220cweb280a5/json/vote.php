@@ -7,25 +7,33 @@ spl_autoload_register(function ($class) {
 });
 
 // Die if the member isn't authenticated
-if (!isset($_SESSION['member']))
+if (!isset($_POST['member']))
 {
 	die("Not authenticated");
 }
 
 // Get the stuff from the post
-if(!isset($_REQUEST['id']) || !isset($_REQUEST['isUp']))
+if(!isset($_POST['id']) || !isset($_POST['isUp']))
 {
     die("Incorrect data sent");
 }
-$id = (int)$_REQUEST['id'];
-$isUp = $_REQUEST['isUp'];
+$id = (int)$_POST['id'];
+$isUp = $_POST['isUp'];
 
 // Get the comment out of the database
 $db = new DB3('../../db/imageranker.db');
 
 $comment = new Comment();
 $comment->commentId = $id;
+
+// If the comment doesn't exist, go away
+if (!$db->exists($comment))
+{
+	die("Invalid comment id");
+}
 $db->select($comment);
+
+
 
 if ($isUp)
 {

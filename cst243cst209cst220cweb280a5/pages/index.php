@@ -97,7 +97,7 @@ $allMembers = array_combine($keys, $allMembers);
     // Loop through all the top images and put them on the page
     foreach ($topImages as $currentImage)
     { ?>
-    	<li><a href="details.php?id=<?= $currentImage->id ?>"><img src="<?= $currentImage->path ?>" /></a></li>
+    	<li><a href="details.php?id=<?= $currentImage->id ?>"><img src="<?= htmlentities($currentImage->path) ?>" /></a></li>
     <?php
     } ?>
     </ul>
@@ -113,12 +113,12 @@ $allMembers = array_combine($keys, $allMembers);
     ?>
     	<li class="allImages">
             <div>
-                <img class="profile" src="<?= $currentMember->profileImgPath ?>" />
-                <?= $currentMember->alias ?>
+                <img class="profile" src="<?= htmlentities($currentMember->profileImgPath) ?>" />
+                <?= htmlentities($currentMember->alias) ?>
             </div>
 
             <div>
-                <a href="details.php?id=<?= $currentImage->id ?>"><img src="<?= $currentImage->path ?>" /></a>
+                <a href="details.php?id=<?= htmlentities($currentImage->id) ?>"><img src="<?= htmlentities($currentImage->path) ?>" /></a>
             </div>         
 
                         <?php
@@ -128,12 +128,13 @@ $allMembers = array_combine($keys, $allMembers);
                 // Give them an update input instead of just text
                 ?>
                 <div class="error" id="<?= $currentImage->id ?>"></div>
-                <div><input type="text" value="<?= $currentImage->caption ?>" onblur="updateCaption('<?= $currentImage->path ?>', <?= $currentImage->id ?>);" /></div>
+                <div><input type="text" value="<?= htmlentities($currentImage->caption) ?>" 
+                            onblur="updateCaption('<?= htmlentities($currentImage->path) ?>', <?= $currentImage->id ?>);" /></div>
             <?php
             }
             else
             { ?>
-            <div><?= $currentImage->caption ?></div>
+            <div><?= htmlentities($currentImage->caption) ?></div>
             <?php
             }
             ?>  

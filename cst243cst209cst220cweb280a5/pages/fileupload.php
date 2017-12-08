@@ -79,21 +79,21 @@ if($isPosted && !$isEmptyUpload && isset($_FILES['imageUpload']))
     $errorMessage .=<<<EOT
 
 <div>
-    $uploadedFile->getError('size');
+    {$uploadedFile->getError('size')}
 </div>
 
 EOT;
     $errorMessage .=<<<EOT
 
 <div>
-    $uploadedFile->getError('type');
+    {$uploadedFile->getError('type')}
 </div>
 
 EOT;
     $errorMessage .=<<<EOT
 
 <div>
-    $uploadedFile->getError('path');
+    {$uploadedFile->getError('path')}
 </div>
 
 EOT;
@@ -132,7 +132,7 @@ if(isset($uploadedFile))
 if($isEmptyUpload)
 {
     $errorMessage .= <<<EOT
-<div>
+<div class = "error">
     <p>Must select a file to upload<p>
 </div>
 EOT;
@@ -143,7 +143,7 @@ EOT;
 <!DOCTYPE html>
 <html>
 <head>
-    <title>File Upload</title>
+    <title>Image Upload</title>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript">
         function updateCaption() {
@@ -178,11 +178,11 @@ EOT;
         <a href="memberregister.php">Register</a>
         <a href="memberlogin.php">Login</a>
     </nav>
-    <h1>File Upload</h1>
-    <div>
+    <h1>Image Upload</h1>
+    <div class="error">
+        <?=$errorMessage?>
         <p id="captionError"></p>
     </div>
-    <?=$errorMessage?>
     <?php if(!$isPosted || !$isValidPost) { ?>
     <form action="#" method="post" enctype="multipart/form-data">
         <fieldset>
@@ -203,7 +203,7 @@ EOT;
                 if($member['memberId'] == $uploadedFile->memId){ $inputCaption->render(); }?>
             </div>
             <div>
-                <img src="<?=$uploadedFile->path?>" alt="Uploaded Image" />
+                <img src="<?=htmlentities($uploadedFile->path)?>" alt="Uploaded Image" />
             </div>
             <div>
                 <input type="submit" value="Post to Gallery" />

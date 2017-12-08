@@ -131,7 +131,7 @@ else // Otherwise, the user is authenticated, so redirect them
     </form>
     <?php }
           if ($isValidPost) { ?>
-    <div>
+    <div class="error">
         Credentials not found
     </div>
     <?php } ?>
