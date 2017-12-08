@@ -13,7 +13,7 @@ $comments = $db->selectSomeOrder(new Comment(), array('ranking' => 'DESC'), arra
 
 // Get all the members out of the database
 $allMembers = $db->selectAll(new Member());
-$keys = array();
+$keys = array(); //turn the members into a key=>value array of values
 foreach ($allMembers as $currentMember)
 {
 	$keys[] = $currentMember->memberId;
@@ -21,7 +21,7 @@ foreach ($allMembers as $currentMember)
 $allMembers = array_combine($keys, $allMembers);
 
 $commentsProfile = array();
-
+//create CommentMember objects for all comments on the image
 foreach($comments as $comment)
 {
     $commentsProfile[] = new CommentMember($comment, $allMembers[$comment->memberId]);

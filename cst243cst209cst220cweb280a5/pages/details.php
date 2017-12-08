@@ -111,41 +111,49 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
 
             var viewModel = {
                 comments: ko.observableArray(),
+                //Get all comments and display them ordered by ranking
                 getComments: function() {
                     var thisClass = $(this);
-
+                    //makes a call to commentjson which will return comments by image id
                     $.getJSON('../json/commentjson.php', {'imageId': document.getElementById('imageId').value},
                     function (jsonComments) {
+                        //If 'no comments' is returned, no images displayed
                         if(jsonComments != "No comments")
                         {
+                            //create an array that will contain the comments
                             observableComments = Array();
+                            //loop through each element in the jsonComments array and add to observableComments
                             for(var i = 0; i < jsonComments.length; i++)
                             {
                                 observableComments.push(new observableComment(jsonComments[i]));
                             }
+                            
                             viewModel.comments(observableComments);
                         }
                     })
 
                 },
+                //allows an authenticated and authorized user to post a comment
                 postComment: function () {
                     $.ajax('../json/commentjsonpost.php',
                         {
+                            //pass in the comment and the image id
                             data: {
                                 "comment": document.getElementById('newComment').value,
                                 'imageId': document.getElementById('imageId').value
                             },
                             method: 'POST',
                             success: function(data) {
-                                if(data === "success")
+                                if(data === "success") //if commentjsonpost returns 'success'
                                 {
+                                    //display all comments, including the new comment
                                     viewModel.getComments();
-                                    document.getElementById('newComment').value = "";
-                                    document.getElementById('errorMessage').innerHTML = "";
+                                    document.getElementById('newComment').value = ""; //remove any text from the comment input
+                                    document.getElementById('errorMessage').innerHTML = ""; //remove any errors that are currently displayed
                                 }
                                 else
                                 {
-                                    document.getElementById('errorMessage').innerHTML = data;
+                                    document.getElementById('errorMessage').innerHTML = data;//if 'success' is not returned, display error info
                                 }
                             }
                         });
@@ -165,20 +173,21 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
             }
 
             function vote(comment, event) {
-                var isUp = $(event.target).text() == "Upvote" ? 1 : 0;
+                var isUp = $(event.target).text() == "Upvote" ? 1 : 0; //if the user has selected "upvote"
                 $.ajax('../json/vote.php',
                     {
+                        //pass in the comment id and 1(up) or 0(down)
                         "data": {
                             "id": comment.commentId,
                             "isUp": isUp
                         },
                         "method": "POST",
                         "success": function (data) {
-                            if (data == "success") {
+                            if (data == "success") { //if vote returns 'success', redisplay comments with updated ranking value
                                 viewModel.getComments();
                             }
                             else {
-                                alert(data);
+                                alert(data); //error, display message to user
                             }
                             
                         }
@@ -188,26 +197,26 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
             function updateCaption() {
                 $.ajax('../json/updatecaption.php',
                     {
-                        "data": {
+                        "data": { //pass in the new caption and the image path
                             "caption": document.getElementById("caption").value,
                             "path": document.getElementById("imagePath").value,
                         },
                         "method": "POST",
                         "success": function(data) {
-                            if(data != 'success')
+                            if(data != 'success') //if updatecaption doesn't return 'success'
                             {
-                                document.getElementById('captionError').innerHTML=data;
+                                document.getElementById('captionError').innerHTML=data; //display error message
                             }
                             else
                             {
-                                document.getElementById('captionError').innerHTML=null;
+                                document.getElementById('captionError').innerHTML=null; //remove any error messages
                             }
                         }
                     });
             }
 
             $(function () {
-                viewModel.getComments();
+                viewModel.getComments(); //display any comments that are associated with this image
                 ko.applyBindings(viewModel);
             });
         </script>
@@ -234,17 +243,17 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
             <?php $imageId->render(); ?>
         </div>
         <div>
-            <?php if($isOrigUploader)
+            <?php if($isOrigUploader) //if the currently logged in user is the uploader of the image, allow caption update
                   {$inputCaption->render();
                   $imagePath->render();
                   } else { ?>
             <h2>
-                <?=htmlentities($image->caption)?>
+                <?=htmlentities($image->caption)//else display the caption as an h2?>
             </h2><?php } ?>
         </div>
-        <img src="<?=htmlentities($image->path)?>" />
+        <img src="<?=htmlentities($image->path)//output the image?>" />
         <h2>Comments</h2>
-        <?php if($isMember) {?>
+        <?php if($isMember) //allow logged in users to post comments{?>
         <div class="error" id="errorMessage"></div>
         <label>Post a new comment</label>
         <?php $newComment->render(); ?>

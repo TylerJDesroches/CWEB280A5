@@ -12,13 +12,15 @@ if(isset($_SESSION['member']))
 }
 
 $isPosted = $_SERVER['REQUEST_METHOD'] === 'POST';
-
+//validate that there is a caption and image path
 if($isPosted && isset($_POST['caption']) && isset($_POST['path']))
 {
     $db = new DB3('../../db/imageranker.db');
+    //get the image the corresponds to the image path
     $image = $db->selectSome(new Image(), array(new Filter('path', $_POST['path'])))[0];
-    if(isset($_SESSION['member']) && $image->memId == $member['memberId'])
+    if(isset($_SESSION['member']) && $image->memId == $member['memberId'])//if member is logged in and member is posting as themselves
     {
+        //update caption
         $image->caption = $_POST['caption'];
         if($image->validate_caption())
         {
@@ -26,12 +28,12 @@ if($isPosted && isset($_POST['caption']) && isset($_POST['path']))
         }
         else
         {
-            echo $image->getError('caption');
+            echo $image->getError('caption');//display error
         }
     }
     else
     {
-        echo 'Not authorized';
+        echo 'Not authorized';//display if not authorized
     }
 
 

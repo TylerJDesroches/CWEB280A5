@@ -149,21 +149,21 @@ EOT;
         function updateCaption() {
 
             $.ajax('../json/updatecaption.php',
-                {
+                {//input the new caption and the image path
                     "data": {
                         "caption": document.getElementById("caption").value,
                         "path": document.getElementById("imagePath").value,
                     },
                     "method": "POST",
                     "success": function(data) {
-                        
+                        //if 'success' isn't returned
                         if(data != 'success')
                         {
-                            document.getElementById('captionError').innerHTML=data;
+                            document.getElementById('captionError').innerHTML=data; //display errors
                         }
                         else
                         {
-                            document.getElementById('captionError').innerHTML=null;
+                            document.getElementById('captionError').innerHTML=null; //remove errors
                         }
                     }
                 });
