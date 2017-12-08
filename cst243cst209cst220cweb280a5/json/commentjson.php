@@ -10,13 +10,21 @@ spl_autoload_register(function ($class) {
 
 $db = new DB3('../../db/imageranker.db');
 $comments = $db->selectSomeOrder(new Comment(), array('ranking' => 'DESC'), array(new Filter('imageId', $_GET['imageId'])));
+
+// Get all the members out of the database
+$allMembers = $db->selectAll(new Member());
+$keys = array();
+foreach ($allMembers as $currentMember)
+{
+	$keys[] = $currentMember->memberId;
+}
+$allMembers = array_combine($keys, $allMembers);
+
 $commentsProfile = array();
-$i = 0;
+
 foreach($comments as $comment)
 {
-    $member = $db->selectSome(new Member(), array(new Filter('memberId',$comment->memberId)))[0];
-    $commentsProfile[$i . $member->profileImgPath . ':path-alias:' . $member->alias] = $comment;
-    $i++;
+    $commentsProfile[] = new CommentMember($comment, $allMembers[$comment->memberId]);
 }
 
 $db->close();

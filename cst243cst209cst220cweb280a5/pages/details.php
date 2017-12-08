@@ -62,7 +62,7 @@ else //if the id isn't set or the image doesn't exist
     $db->close();
     $db = null;
     //Redirect the user back to the gallery page
-    header('Location: index.php');
+    //header('Location: index.php');
 }
 
 //Create a new input for signed in users to post a comment
@@ -118,30 +118,10 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
                     function (jsonComments) {
                         if(jsonComments != "No comments")
                         {
-                            //alert(jsonComments);
-                            var paths = [];
-                            var comments = [];
-                            var jsonPaths = [];
-                            var jsonCom = {};
-                            paths = Object.keys(jsonComments);
-                            for(var path in paths)
-                            {
-                                var pathAlias = paths[path].substr(1);
-                                var pathAlias = pathAlias.split(':path-alias:');
-                                var jsonPath = {"imagePath":pathAlias[0], "alias":pathAlias[1]};
-                                jsonPaths[path] = jsonPath;
-
-                            }
-                            var j = 0;
-                            for(var key in jsonComments)
-                            {
-                                comments[j] = jsonComments[key];
-                                j++;
-                            }
                             observableComments = Array();
-                            for(var i = 0; i < paths.length; i++)
+                            for(var i = 0; i < jsonComments.length; i++)
                             {
-                                observableComments.push(new observableComment(comments[i], jsonPaths[i]));
+                                observableComments.push(new observableComment(jsonComments[i]));
                             }
                             viewModel.comments(observableComments);
                         }
@@ -171,15 +151,29 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
                 }
             };
 
-            function observableComment(jsonObj, path)
+            function observableComment(jsonObj)
             {
                 //this is defining an object constructor
                 //Take in a json object with the same property names as the observable comment object
-                this.memberId = ko.observable(jsonObj.memberId);
-                this.ranking = ko.observable(jsonObj.ranking);
-                this.description = ko.observable(jsonObj.description);
-                this.imagePath = ko.observable(path.imagePath);
-                this.alias = ko.observable(path.alias);
+                this.commentId = jsonObj.commentId;
+                this.ranking = jsonObj.ranking;
+                this.description = jsonObj.description;
+                this.imagePath = jsonObj.imagePath;
+                this.alias = jsonObj.alias;
+            }
+
+            function vote(comment, event) {
+                $.ajax('../json/vote.php',
+                    {
+                        "data": {
+                            "id": comment.commentId,
+                            "isUp": $(event.target).text() == "Upvote" ? 1 : 0
+                        },
+                        "method": "POST",
+                        "success": function (data) {
+                            viewModel.getComments();
+                        }
+                    });
             }
 
             function updateCaption() {
@@ -208,6 +202,7 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
                 ko.applyBindings(viewModel);
             });
         </script>
+        <link href="../style/pagestyling.css" rel="stylesheet" />
     </head>
     <body>
         <nav>
@@ -218,7 +213,7 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
         </nav>
         <h1>Image Detail</h1>
         <div>
-            <img src="<?=$origMember->profileImgPath?>" width="50px" height="50px" />
+            <img class="profile" src="<?=$origMember->profileImgPath?>" />
             <p>
                 User: <?=$origMember->alias?>
             </p>
@@ -261,6 +256,8 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
                     <td data-bind="text: alias"></td>
                     <td data-bind="text: ranking"></td>
                     <td data-bind="text: description"></td>
+                    <td class="clickable" data-bind="attr: {'data-commentid': commentId}, click: vote">Upvote</td>
+                    <td class="clickable" data-bind="attr: {'data-commentid': commentId}, click: vote">Downvote</td>
                 </tr>
             </tbody>
         </table>

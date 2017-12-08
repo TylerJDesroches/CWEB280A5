@@ -16,6 +16,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Comment.php" />
+    <Compile Include="CommentMember.php" />
     <Compile Include="DB3\Column.php" />
     <Compile Include="DB3\DB3.php" />
     <Compile Include="DB3\Filter.php" />

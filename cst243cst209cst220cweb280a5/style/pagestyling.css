@@ -47,7 +47,16 @@ li.allImages input {
 }
 
 /* This css block is for profile images. The selector may have to be changed */
-li.allImages img.profile {
+img.profile {
     width: 50px;
     height: 50px;
+}
+
+.clickable {
+    cursor: pointer;
+    color: blue;
+}
+
+.clickable:hover {
+    color: darkcyan;
 }
