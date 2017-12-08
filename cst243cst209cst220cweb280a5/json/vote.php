@@ -7,7 +7,7 @@ spl_autoload_register(function ($class) {
 });
 
 // Die if the member isn't authenticated
-if (!isset($_POST['member']))
+if (!isset($_SESSION['member']))
 {
 	die("Not authenticated");
 }
