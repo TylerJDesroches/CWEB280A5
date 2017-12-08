@@ -122,8 +122,8 @@ $allMembers = array_combine($keys, $allMembers);
             </div>         
 
                         <?php
-        var_dump($member);
-            if($member->memberId === $currentImage->memId)
+        
+            if(isset($_SESSION['member']) && $member['memberId'] === $currentImage->memId)
             {
                 // Give them an update input instead of just text
                 ?>
