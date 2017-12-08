@@ -47,11 +47,6 @@ if(isset($_POST['delete']))
     $db = null;
 }
 
-//set the logged in member to a variable to make it easier to call
-//$member = get_object_vars($_SESSION['member']);
-
-
-//If the user has submitted a valid image
 if($isPosted && !$isEmptyUpload && isset($_FILES['imageUpload']))
 {
     $imageVars = $_FILES['imageUpload'];

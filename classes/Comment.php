@@ -44,7 +44,7 @@ class Comment extends Model
     public function validate_description()
     {
         return $this->checkProperty('description',!empty($this->description) &&
-                ( strlen($this->description) >= 5 && strlen($this->description) ) <= 144,
+                strlen($this->description) >= 5 && strlen($this->description) <= 144,
                 'Comment %s must be between 5 and 144 characters');
     }
     /**
@@ -62,7 +62,7 @@ class Comment extends Model
      */
     public function validate_imageId()
     {
-        return $this->checkProperty('commentId', !empty($this->imageId) && is_int($this->imageId), '%s must be a number');
+        return $this->checkProperty('imageId', !empty($this->imageId) && is_int($this->imageId), '%s must be a number');
     }
     /**
      * A validator function to make sure the

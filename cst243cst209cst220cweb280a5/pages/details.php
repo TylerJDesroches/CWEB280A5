@@ -29,6 +29,10 @@ $isOrigUploader = false;
 
 $db = new DB3('../../db/imageranker.db');
 
+//define comment table
+$comment = new Comment();
+$db->exec($comment->tableDefinition());
+
 //Get all the images from the database (for the previous and next page)
 $allImages = $db->selectSomeOrder(new Image(), array('views'=>'DESC'), array());
 //if the id is set in the GET superglobals
@@ -44,10 +48,6 @@ if(isset($_GET['id']) && $image != false && $image->approved )
     //Increment the view count
     $image->views += 1;
     $db->update($image);
-
-    //define comment table
-    $comment = new Comment();
-    $db->exec($comment->tableDefinition());
 
     //Get the member who originally posted the image
     $origMember = $db->selectSome(new Member(), array(new Filter('memberId', $image->memId)))[0];
@@ -108,7 +108,7 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
         <script type="text/javascript">
-            
+
             var viewModel = {
                 comments: ko.observableArray(),
                 getComments: function() {
@@ -118,11 +118,52 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
                     function (jsonComments) {
                         if(jsonComments != "No comments")
                         {
-                        
-                            observableComments = Array();
-                            for(i = 0; i < jsonComments.length; i++)
+                            //alert(jsonComments);
+                            var paths = [];
+                            var comments = [];
+                            var jsonPaths = {};
+                            var jsonCom = {};
+                            paths = Object.keys(jsonComments);
+                            //alert(paths);
+                            for(var key in jsonComments);
                             {
-                                observableComments.push(new observableComment(jsonComments[i]));
+                                //paths.push(key);
+                                //alert('key' + key);
+
+                            }
+                            var i = 0;
+                            paths.forEach(function(path)
+                            {
+                                //alert(path);
+                                jsonPaths["imagePath"] = path.substr(1);
+                                alert(path.substr(1));
+                                i++;
+                            });
+                            var j = 0;
+                            for(var key in jsonComments)
+                            {
+                                comments[j] = jsonComments[key];
+                            }
+                            
+                            //console.log(comments);
+                            comments.forEach(function(comment)
+                            {
+                                //alert(path);
+                                jsonCom.push(comment);
+                                
+                                
+                            });
+                            console.log(jsonCom);
+                            //alert(paths);
+                            //alert(jsonPaths);
+                            observableComments = Array();
+                            //alert('hello');
+                            //console.log(jsonPaths);
+                            for(var i = 0; i < paths.length; i++)
+                            {
+                                //var comment = new observableComment(jsonComments[i], jsonPaths[i]);
+                                alert("hello");
+                                observableComments.push(new observableComment(jsonComments[i], jsonPaths[i]));
                             }
                             viewModel.comments(observableComments);
                         }
@@ -130,36 +171,36 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
 
                 },
                 postComment: function () {
-                    alert("hello");
-                        $.ajax('../json/commentjsondecode.php',
-                            {
-                                'data': {
-                                    "comment": document.getElementById('newComment').value,
-                                    'imageId': document.getElementById('imageId').value
-
-
-
-                                },
-                                'method': 'POST',
-                                'success': function(data) {
-                                    if(data === 'success')
-                                    {
-                                        viewModel.getComments();
-                                    }
+                    $.ajax('../json/commentjsonpost.php',
+                        {
+                            data: {
+                                "comment": document.getElementById('newComment').value,
+                                'imageId': document.getElementById('imageId').value
+                            },
+                            method: 'POST',
+                            success: function(data) {
+                                if(data === "success")
+                                {
+                                    viewModel.getComments();
                                 }
-                            });
-                    
+                                else
+                                {
+                                    alert("Error: " + data);
+                                }
+                            }
+                        });
+
                 }
             };
 
-            function observableComment(jsonObj)
+            function observableComment(jsonObj, path)
             {
                 //this is defining an object constructor
                 //Take in a json object with the same property names as the observable comment object
                 this.memberId = ko.observable(jsonObj.memberId);
                 this.ranking = ko.observable(jsonObj.ranking);
                 this.description = ko.observable(jsonObj.description);
-
+                this.imagePath = ko.observable(path.imagePath);
             }
 
             function updateCaption() {
@@ -225,7 +266,7 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
         <?php $newComment->render(); ?>
         <button data-bind="click: viewModel.postComment" >Post</button>
         <?php } ?>
-        <table data-bind="sort: { list: comments, alwaysBy: 'ranking'}">
+        <table data-bind="sort: { list: comments}">
             <thead>
                 <tr>
                     <th>Member ID</th>
@@ -235,6 +276,7 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
             </thead>
             <tbody data-bind="foreach: comments">
                 <tr>
+                    <td data-bind="attr: { src: imagePath }"></td>
                     <td data-bind="text: memberId"></td>
                     <td data-bind="text: ranking"></td>
                     <td data-bind="text: description"></td>
