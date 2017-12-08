@@ -10,12 +10,12 @@ spl_autoload_register(function ($class) {
 
 $db = new DB3('../../db/imageranker.db');
 $comments = $db->selectSomeOrder(new Comment(), array('ranking' => 'DESC'), array(new Filter('imageId', $_GET['imageId'])));
-$commentsProfPic = array();
+$commentsProfile = array();
 $i = 0;
 foreach($comments as $comment)
 {
     $member = $db->selectSome(new Member(), array(new Filter('memberId',$comment->memberId)))[0];
-    $commentsProfPic[$i . $member->profileImgPath] = $comment;
+    $commentsProfile[$i . $member->profileImgPath . ':path-alias:' . $member->alias] = $comment;
     $i++;
 }
 
@@ -25,7 +25,7 @@ $db = null;
 //Check to make sure array has comments
 if(isset($comments[0]))
 {
-    echo json_encode($commentsProfPic);
+    echo json_encode($commentsProfile);
 }
 else
 {

@@ -121,49 +121,27 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
                             //alert(jsonComments);
                             var paths = [];
                             var comments = [];
-                            var jsonPaths = {};
+                            var jsonPaths = [];
                             var jsonCom = {};
                             paths = Object.keys(jsonComments);
-                            //alert(paths);
-                            for(var key in jsonComments);
+                            for(var path in paths)
                             {
-                                //paths.push(key);
-                                //alert('key' + key);
+                                var pathAlias = paths[path].substr(1);
+                                var pathAlias = pathAlias.split(':path-alias:');
+                                var jsonPath = {"imagePath":pathAlias[0], "alias":pathAlias[1]};
+                                jsonPaths[path] = jsonPath;
 
                             }
-                            var i = 0;
-                            paths.forEach(function(path)
-                            {
-                                //alert(path);
-                                jsonPaths["imagePath"] = path.substr(1);
-                                alert(path.substr(1));
-                                i++;
-                            });
                             var j = 0;
                             for(var key in jsonComments)
                             {
                                 comments[j] = jsonComments[key];
+                                j++;
                             }
-                            
-                            //console.log(comments);
-                            comments.forEach(function(comment)
-                            {
-                                //alert(path);
-                                jsonCom.push(comment);
-                                
-                                
-                            });
-                            console.log(jsonCom);
-                            //alert(paths);
-                            //alert(jsonPaths);
                             observableComments = Array();
-                            //alert('hello');
-                            //console.log(jsonPaths);
                             for(var i = 0; i < paths.length; i++)
                             {
-                                //var comment = new observableComment(jsonComments[i], jsonPaths[i]);
-                                alert("hello");
-                                observableComments.push(new observableComment(jsonComments[i], jsonPaths[i]));
+                                observableComments.push(new observableComment(comments[i], jsonPaths[i]));
                             }
                             viewModel.comments(observableComments);
                         }
@@ -201,6 +179,7 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
                 this.ranking = ko.observable(jsonObj.ranking);
                 this.description = ko.observable(jsonObj.description);
                 this.imagePath = ko.observable(path.imagePath);
+                this.alias = ko.observable(path.alias);
             }
 
             function updateCaption() {
@@ -269,15 +248,17 @@ for ($i = 0; $i < count($allImages) && !$done; $i++)
         <table data-bind="sort: { list: comments}">
             <thead>
                 <tr>
-                    <th>Member ID</th>
+
+                    <th>Member</th>
+                    <th></th>
                     <th>Ranking</th>
                     <th>Description</th>
                 </tr>
             </thead>
             <tbody data-bind="foreach: comments">
                 <tr>
-                    <td data-bind="attr: { src: imagePath }"></td>
-                    <td data-bind="text: memberId"></td>
+                    <td><img class="profile" data-bind="attr: { src: imagePath }"/></td>
+                    <td data-bind="text: alias"></td>
                     <td data-bind="text: ranking"></td>
                     <td data-bind="text: description"></td>
                 </tr>
